@@ -1,0 +1,490 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Find a Donor - JeevanSeva</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Additional styles for find donor page */
+    .search-form {
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+      margin-bottom: 30px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-family: inherit;
+      font-size: 1rem;
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--jeevanseva-red);
+      box-shadow: 0 0 0 2px rgba(229, 62, 62, 0.1);
+    }
+    
+    .search-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 0.5fr;
+      grid-gap: 20px;
+    }
+    
+    .required-field::after {
+      content: "*";
+      color: var(--jeevanseva-red);
+      margin-left: 3px;
+    }
+    
+    .search-results {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+      overflow: hidden;
+      margin-bottom: 30px;
+    }
+    
+    .search-header {
+      padding: 20px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .search-header h2 {
+      margin-bottom: 5px;
+    }
+    
+    .search-meta {
+      color: var(--jeevanseva-gray);
+      font-size: 0.9rem;
+    }
+    
+    .donors-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .donors-table th {
+      background-color: var(--jeevanseva-light);
+      color: var(--jeevanseva-darkred);
+      text-align: left;
+      padding: 12px 20px;
+    }
+    
+    .donors-table td {
+      padding: 12px 20px;
+      border-top: 1px solid #eee;
+    }
+    
+    .donors-table tr:hover {
+      background-color: #f9f9f9;
+    }
+    
+    .blood-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      background-color: var(--jeevanseva-light);
+      color: var(--jeevanseva-darkred);
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    
+    .donor-contact a {
+      color: #4299e1;
+      text-decoration: none;
+    }
+    
+    .donor-contact a:hover {
+      text-decoration: underline;
+    }
+    
+    .loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+    }
+    
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 3px solid var(--jeevanseva-light);
+      border-top-color: var(--jeevanseva-red);
+      animation: spin 1s infinite linear;
+      margin-bottom: 20px;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .no-results {
+      text-align: center;
+      padding: 40px;
+    }
+    
+    .no-results h3 {
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+    
+    .no-results p {
+      color: var(--jeevanseva-gray);
+      margin-bottom: 20px;
+    }
+    
+    .search-tips {
+      list-style-position: inside;
+      text-align: left;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    
+    .search-tips li {
+      margin-bottom: 5px;
+    }
+    
+    .sad-emoji {
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
+    
+    .tips-box {
+      background-color: var(--jeevanseva-light);
+      padding: 25px;
+      border-radius: 10px;
+    }
+    
+    .tips-box h3 {
+      margin-bottom: 15px;
+      color: var(--jeevanseva-darkred);
+    }
+    
+    .tips-list {
+      list-style-type: disc;
+      padding-left: 20px;
+      color: var(--jeevanseva-gray);
+    }
+    
+    .tips-list li {
+      margin-bottom: 10px;
+    }
+    
+    @media (max-width: 768px) {
+      .search-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .donors-table thead {
+        display: none;
+      }
+      
+      .donors-table, .donors-table tbody, .donors-table tr, .donors-table td {
+        display: block;
+        width: 100%;
+      }
+      
+      .donors-table tr {
+        margin-bottom: 15px;
+        border-bottom: 1px solid #eee;
+      }
+      
+      .donors-table td {
+        display: flex;
+        text-align: right;
+        padding: 10px 20px;
+        border: none;
+      }
+      
+      .donors-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        margin-right: auto;
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="logo">
+        <div class="blood-drop"></div>
+        <span>JeevanSeva</span>
+      </div>
+      <nav id="navbar">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="donor-registration.html">Become a Donor</a></li>
+          <li><a href="find-donor.html" class="active">Find a Donor</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <div class="mobile-menu-btn" onclick="toggleMobileMenu()">
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </div>
+      </nav>
+    </div>
+  </header>
+  
+  <main>
+    <section class="page-header" style="background-color: var(--jeevanseva-light); padding: 40px 0;">
+      <div class="container">
+        <h1 style="color: var(--jeevanseva-darkred);">Find a Blood Donor</h1>
+        <p>Search for blood donors in your area by entering your location and selecting the required blood group.</p>
+      </div>
+    </section>
+    
+    <section class="find-donor-section">
+      <div class="container">
+        <div class="search-form">
+          <form id="searchForm">
+            <div class="search-grid">
+              <div class="form-group">
+                <label for="location" class="required-field">Location</label>
+                <input type="text" id="location" name="location" required placeholder="Enter city, area or full address">
+              </div>
+              
+              <div class="form-group">
+                <label for="bloodGroup">Blood Group</label>
+                <select id="bloodGroup" name="bloodGroup">
+                  <option value="">Any blood group</option>
+                  <option value="A+">A+</option>
+                  <option value="A-">A-</option>
+                  <option value="B+">B+</option>
+                  <option value="B-">B-</option>
+                  <option value="AB+">AB+</option>
+                  <option value="AB-">AB-</option>
+                  <option value="O+">O+</option>
+                  <option value="O-">O-</option>
+                </select>
+              </div>
+              
+              <div class="form-group" style="display: flex; align-items: flex-end;">
+                <button type="submit" id="searchBtn" class="btn-submit" style="width: 100%;">Search Donors</button>
+              </div>
+            </div>
+          </form>
+        </div>
+        
+        <div id="searchResults" class="search-results" style="display: none;">
+          <div class="search-header">
+            <h2 id="resultsTitle">Search Results</h2>
+            <p id="resultsMeta" class="search-meta"></p>
+          </div>
+          
+          <div id="resultsContent">
+            <!-- Results will be populated here -->
+          </div>
+        </div>
+        
+        <div class="tips-box">
+          <h3>Tips for Finding Donors</h3>
+          <ul class="tips-list">
+            <li>Enter your city or area name to find the most relevant donors.</li>
+            <li>If you don't find donors of a specific blood group, try searching for compatible blood groups.</li>
+            <li>Always contact donors politely and explain your situation clearly.</li>
+            <li>Not all donors may be available immediately. It's advisable to contact multiple donors.</li>
+            <li>If your need is urgent, consider also contacting local blood banks and hospitals.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <div class="blood-drop"></div>
+          <span>JeevanSeva</span>
+        </div>
+        <p class="tagline">An initiative by VNest Technologies And Platforms Pvt. Ltd.</p>
+        <div class="footer-links">
+          <div class="link-column">
+            <h4>Quick Links</h4>
+            <ul>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="donor-registration.html">Register as Donor</a></li>
+              <li><a href="find-donor.html">Find a Donor</a></li>
+              <li><a href="about.html">About Us</a></li>
+              <li><a href="contact.html">Contact</a></li>
+            </ul>
+          </div>
+          <div class="link-column">
+            <h4>Contact Us</h4>
+            <ul>
+              <li><a href="tel:9529081894">+91 9529081894</a></li>
+              <li><a href="mailto:contact@vnest.tech">contact@vnest.tech</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 JeevanSeva. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const searchForm = document.getElementById('searchForm');
+      const searchResultsContainer = document.getElementById('searchResults');
+      const resultsTitle = document.getElementById('resultsTitle');
+      const resultsMeta = document.getElementById('resultsMeta');
+      const resultsContent = document.getElementById('resultsContent');
+      
+      let hasSearched = false;
+      let isSearching = false;
+      
+      searchForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const location = document.getElementById('location').value.trim();
+        if (!location) {
+          showToast('Please enter a location', 'error');
+          return;
+        }
+        
+        const bloodGroup = document.getElementById('bloodGroup').value;
+        
+        isSearching = true;
+        hasSearched = true;
+        
+        // Show search results container
+        searchResultsContainer.style.display = 'block';
+        
+        // Update title and meta
+        resultsTitle.textContent = 'Searching...';
+        resultsMeta.textContent = `${bloodGroup ? `Blood Group: ${bloodGroup}` : 'All Blood Groups'} | Location: ${location}`;
+        
+        // Show loading state
+        resultsContent.innerHTML = `
+          <div class="loading">
+            <div class="spinner"></div>
+            <p>Searching for donors...</p>
+          </div>
+        `;
+        
+        try {
+          // Disable search button
+          document.getElementById('searchBtn').disabled = true;
+          document.getElementById('searchBtn').textContent = 'Searching...';
+          
+          // Make the search request
+          const results = await searchDonors(location, bloodGroup);
+          
+          // Update title with results count
+          resultsTitle.textContent = `Search Results (${results.length})`;
+          
+          // Render results
+          if (results.length > 0) {
+            // Create table for results
+            let tableHTML = `
+              <table class="donors-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Blood Group</th>
+                    <th>Location</th>
+                    <th>Contact</th>
+                  </tr>
+                </thead>
+                <tbody>
+            `;
+            
+            // Add each donor to the table
+            results.forEach(donor => {
+              tableHTML += `
+                <tr>
+                  <td data-label="Name">
+                    <div>${donor.name}</div>
+                    <div style="font-size: 0.85rem; color: #666;">
+                      ${donor.age} years, ${donor.gender}
+                    </div>
+                  </td>
+                  <td data-label="Blood Group">
+                    <span class="blood-badge">${donor.bloodGroup}</span>
+                  </td>
+                  <td data-label="Location">${donor.location}</td>
+                  <td data-label="Contact" class="donor-contact">
+                    <div><a href="tel:${donor.phone}">${donor.phone}</a></div>
+                    <div style="font-size: 0.85rem;">
+                      <a href="mailto:${donor.email}">${donor.email}</a>
+                    </div>
+                  </td>
+                </tr>
+              `;
+            });
+            
+            tableHTML += `
+                </tbody>
+              </table>
+            `;
+            
+            resultsContent.innerHTML = tableHTML;
+          } else {
+            // Show no results message
+            resultsContent.innerHTML = `
+              <div class="no-results">
+                <div class="sad-emoji">😕</div>
+                <h3>No donors found</h3>
+                <p>We couldn't find any donors matching your search criteria.</p>
+                <div class="search-tips">
+                  <p>Try:</p>
+                  <ul class="search-tips">
+                    <li>Searching for a different location</li>
+                    <li>Searching for any blood group</li>
+                    <li>Using a broader location (e.g., city name instead of specific area)</li>
+                  </ul>
+                </div>
+              </div>
+            `;
+          }
+        } catch (error) {
+          console.error('Error searching donors:', error);
+          showToast('Error searching for donors. Please try again.', 'error');
+          
+          // Show error message
+          resultsContent.innerHTML = `
+            <div class="no-results">
+              <h3>Search Error</h3>
+              <p>There was a problem searching for donors. Please try again later.</p>
+            </div>
+          `;
+        } finally {
+          // Re-enable search button
+          document.getElementById('searchBtn').disabled = false;
+          document.getElementById('searchBtn').textContent = 'Search Donors';
+          isSearching = false;
+        }
+      });
+    });
+  </script>
+</body>
+</html>

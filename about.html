@@ -1,0 +1,260 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us - JeevanSeva</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Additional styles for about page */
+    .about-section {
+      padding: 40px 0;
+    }
+    
+    .about-card {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+      padding: 30px;
+      margin-bottom: 30px;
+    }
+    
+    .about-card h2 {
+      color: var(--jeevanseva-darkred);
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+    }
+    
+    .about-card p {
+      margin-bottom: 20px;
+      color: var(--jeevanseva-gray);
+      line-height: 1.7;
+    }
+    
+    .about-card p:last-child {
+      margin-bottom: 0;
+    }
+    
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin: 30px 0;
+    }
+    
+    .info-card {
+      background-color: var(--jeevanseva-light);
+      padding: 20px;
+      border-radius: 8px;
+    }
+    
+    .info-card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+      color: var(--jeevanseva-darkred);
+    }
+    
+    .info-card p {
+      font-size: 0.95rem;
+    }
+    
+    .centered-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    
+    .cta-box {
+      background-color: var(--jeevanseva-red);
+      color: white;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+      margin-top: 30px;
+    }
+    
+    .cta-box h2 {
+      margin-bottom: 15px;
+    }
+    
+    .cta-box p {
+      margin-bottom: 20px;
+    }
+    
+    .cta-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="logo">
+        <div class="blood-drop"></div>
+        <span>JeevanSeva</span>
+      </div>
+      <nav id="navbar">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="donor-registration.html">Become a Donor</a></li>
+          <li><a href="find-donor.html">Find a Donor</a></li>
+          <li><a href="about.html" class="active">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <div class="mobile-menu-btn" onclick="toggleMobileMenu()">
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </div>
+      </nav>
+    </div>
+  </header>
+  
+  <main>
+    <section class="page-header" style="background-color: var(--jeevanseva-light); padding: 40px 0;">
+      <div class="container">
+        <h1 style="color: var(--jeevanseva-darkred);">About JeevanSeva</h1>
+        <p>Learn more about our mission to connect blood donors with those in need.</p>
+      </div>
+    </section>
+    
+    <section class="about-section">
+      <div class="container">
+        <div class="about-card">
+          <h2>Our Mission</h2>
+          <p>
+            JeevanSeva is an initiative by VNest Technologies And Platforms Pvt. Ltd. aimed at bridging 
+            the gap between blood donors and those in need. Our mission is to create a simple, accessible 
+            platform that connects willing donors with patients requiring blood transfusions.
+          </p>
+          <p>
+            We believe that no one should suffer due to the unavailability of blood. By creating this 
+            platform, we hope to save lives and build a community of donors who are ready to help 
+            others in times of medical emergencies.
+          </p>
+        </div>
+        
+        <div class="about-card">
+          <h2>Why Blood Donation Matters</h2>
+          <p>
+            Blood donation is a critical lifesaving process where a person voluntarily gives blood, 
+            which is then processed and stored for future transfusions to patients in need. Here's why 
+            it matters:
+          </p>
+          
+          <div class="info-grid">
+            <div class="info-card">
+              <h3>Saves Lives</h3>
+              <p>
+                A single donation can save up to three lives, helping patients undergoing surgery, 
+                accident victims, and those battling diseases.
+              </p>
+            </div>
+            
+            <div class="info-card">
+              <h3>Medical Treatments</h3>
+              <p>
+                Many medical treatments rely on blood transfusions, including cancer treatments, 
+                organ transplants, and chronic illnesses.
+              </p>
+            </div>
+            
+            <div class="info-card">
+              <h3>Emergency Readiness</h3>
+              <p>
+                Having blood readily available is crucial for emergency situations like natural disasters 
+                and mass casualties.
+              </p>
+            </div>
+            
+            <div class="info-card">
+              <h3>Regular Need</h3>
+              <p>
+                Blood has a limited shelf life, so there's a constant need for fresh donations to maintain 
+                adequate supplies.
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="about-card">
+          <h2>About VNest Technologies</h2>
+          <div class="centered-logo">
+            <div class="logo">
+              <div class="blood-drop"></div>
+              <span>JeevanSeva</span>
+            </div>
+          </div>
+          <p>
+            VNest Technologies And Platforms Pvt. Ltd. is a technology company focused on creating 
+            innovative solutions that address real-world problems and make a positive impact on society.
+          </p>
+          <p>
+            JeevanSeva is one of our social impact initiatives designed to leverage technology for 
+            humanitarian purposes. By connecting blood donors with recipients, we aim to create a 
+            self-sustaining ecosystem that can respond quickly to medical emergencies.
+          </p>
+          <p>
+            We are committed to maintaining the highest standards of data privacy and security while 
+            ensuring that our platform remains accessible to all who need it.
+          </p>
+        </div>
+        
+        <div class="cta-box">
+          <h2>Join Our Mission</h2>
+          <p>
+            Whether you're a potential donor or someone who might need blood in the future, 
+            registering on JeevanSeva helps strengthen our community and saves lives.
+          </p>
+          <div class="cta-buttons">
+            <a href="donor-registration.html" class="btn btn-light">Register as Donor</a>
+            <a href="find-donor.html" class="btn btn-outline" style="color: white; border-color: white;">Find a Donor</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <div class="blood-drop"></div>
+          <span>JeevanSeva</span>
+        </div>
+        <p class="tagline">An initiative by VNest Technologies And Platforms Pvt. Ltd.</p>
+        <div class="footer-links">
+          <div class="link-column">
+            <h4>Quick Links</h4>
+            <ul>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="donor-registration.html">Register as Donor</a></li>
+              <li><a href="find-donor.html">Find a Donor</a></li>
+              <li><a href="about.html">About Us</a></li>
+              <li><a href="contact.html">Contact</a></li>
+            </ul>
+          </div>
+          <div class="link-column">
+            <h4>Contact Us</h4>
+            <ul>
+              <li><a href="tel:9529081894">+91 9529081894</a></li>
+              <li><a href="mailto:contact@vnest.tech">contact@vnest.tech</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 JeevanSeva. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

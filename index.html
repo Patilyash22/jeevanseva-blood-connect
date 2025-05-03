@@ -1,26 +1,170 @@
+
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>jeevanseva-blood-connect</title>
-    <meta name="description" content="Lovable Generated Project" />
-    <meta name="author" content="Lovable" />
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JeevanSeva - Blood Donation Initiative</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="logo">
+        <div class="blood-drop"></div>
+        <span>JeevanSeva</span>
+      </div>
+      <nav id="navbar">
+        <ul>
+          <li><a href="index.html" class="active">Home</a></li>
+          <li><a href="donor-registration.html">Become a Donor</a></li>
+          <li><a href="find-donor.html">Find a Donor</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <div class="mobile-menu-btn" onclick="toggleMobileMenu()">
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </div>
+      </nav>
+    </div>
+  </header>
+  
+  <main>
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-content">
+          <h1>Donate Blood, Save Lives</h1>
+          <p>JeevanSeva connects blood donors with those in need. Join our community and become a lifesaver.</p>
+          <div class="cta-buttons">
+            <a href="donor-registration.html" class="btn btn-primary">Become a Donor</a>
+            <a href="find-donor.html" class="btn btn-outline">Find a Donor</a>
+          </div>
+        </div>
+        <div class="hero-image">
+          <div class="blood-drop-large"></div>
+          <div class="text-overlay">Give Life</div>
+        </div>
+      </div>
+    </section>
 
-    <meta property="og:title" content="jeevanseva-blood-connect" />
-    <meta property="og:description" content="Lovable Generated Project" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    <!-- How It Works -->
+    <section class="how-it-works">
+      <div class="container">
+        <h2>How It Works</h2>
+        <div class="steps">
+          <div class="step">
+            <div class="step-number">1</div>
+            <h3>Register as a Donor</h3>
+            <p>Fill out a simple form with your details and become part of our donor database.</p>
+          </div>
+          <div class="step">
+            <div class="step-number">2</div>
+            <h3>Get Matched</h3>
+            <p>Those in need can search for donors by location and blood group.</p>
+          </div>
+          <div class="step">
+            <div class="step-number">3</div>
+            <h3>Save Lives</h3>
+            <p>When contacted, you have the opportunity to donate and save a precious life.</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@lovable_dev" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-  </head>
+    <!-- Blood Group Compatibility -->
+    <section class="blood-compatibility">
+      <div class="container">
+        <h2>Blood Group Compatibility</h2>
+        <p class="section-intro">Understanding blood type compatibility is crucial for successful transfusions. 
+          Select your blood group below to see who you can donate to and receive from.</p>
+        
+        <div class="compatibility-chart">
+          <div class="blood-group-selector">
+            <h3>Select Your Blood Group:</h3>
+            <div class="blood-group-buttons">
+              <button class="blood-group-btn" data-group="A+">A+</button>
+              <button class="blood-group-btn" data-group="A-">A-</button>
+              <button class="blood-group-btn" data-group="B+">B+</button>
+              <button class="blood-group-btn" data-group="B-">B-</button>
+              <button class="blood-group-btn" data-group="AB+">AB+</button>
+              <button class="blood-group-btn" data-group="AB-">AB-</button>
+              <button class="blood-group-btn" data-group="O+">O+</button>
+              <button class="blood-group-btn" data-group="O-">O-</button>
+            </div>
+          </div>
 
-  <body>
-    <div id="root"></div>
-    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
-    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+          <div class="compatibility-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Blood Group</th>
+                  <th>Can Donate To</th>
+                  <th>Can Receive From</th>
+                </tr>
+              </thead>
+              <tbody id="compatibility-data">
+                <!-- Blood compatibility data will be inserted here by JavaScript -->
+              </tbody>
+            </table>
+          </div>
+
+          <div id="compatibility-summary" class="compatibility-summary hidden">
+            <!-- Compatibility summary will be inserted here by JavaScript -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+      <div class="container">
+        <div class="cta-box">
+          <h2>Ready to Become a Lifesaver?</h2>
+          <p>Join our community of donors and help save lives in your area.</p>
+          <a href="donor-registration.html" class="btn btn-light">Register Now</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <div class="blood-drop"></div>
+          <span>JeevanSeva</span>
+        </div>
+        <p class="tagline">An initiative by VNest Technologies And Platforms Pvt. Ltd.</p>
+        <div class="footer-links">
+          <div class="link-column">
+            <h4>Quick Links</h4>
+            <ul>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="donor-registration.html">Register as Donor</a></li>
+              <li><a href="find-donor.html">Find a Donor</a></li>
+              <li><a href="about.html">About Us</a></li>
+              <li><a href="contact.html">Contact</a></li>
+            </ul>
+          </div>
+          <div class="link-column">
+            <h4>Contact Us</h4>
+            <ul>
+              <li><a href="tel:9529081894">+91 9529081894</a></li>
+              <li><a href="mailto:contact@vnest.tech">contact@vnest.tech</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 JeevanSeva. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
 </html>
