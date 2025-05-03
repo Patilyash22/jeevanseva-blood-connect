@@ -1,19 +1,9 @@
 
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import HomePage from './HomePage';
+import { Navigate } from 'react-router-dom';
 
 const Index = () => {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    // This effect ensures users on the root path see the HomePage component
-    if (window.location.pathname === '/') {
-      navigate('/', { replace: true });
-    }
-  }, [navigate]);
-
-  return <HomePage />;
+  // Simply redirect to the home page
+  return <Navigate to="/" replace />;
 };
 
 export default Index;

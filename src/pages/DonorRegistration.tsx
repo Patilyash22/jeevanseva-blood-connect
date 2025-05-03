@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { bloodGroups } from '@/types/donor';
 import { addDonor } from '@/utils/storage';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 const DonorRegistration = () => {
   const { toast } = useToast();
@@ -59,7 +61,7 @@ const DonorRegistration = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!validate()) return;
@@ -67,7 +69,7 @@ const DonorRegistration = () => {
     setIsSubmitting(true);
     
     try {
-      addDonor({
+      await addDonor({
         name: formData.name,
         age: Number(formData.age),
         gender: formData.gender,
@@ -112,24 +114,21 @@ const DonorRegistration = () => {
         <h1 className="text-3xl font-bold mb-2 text-jeevanseva-darkred">Become a Blood Donor</h1>
         <p className="text-jeevanseva-gray mb-8">
           Fill out the form below to register as a blood donor. Your information will be stored
-          securely and will only be shared with people in need of blood donation.
+          securely in our database and will only be shared with people in need of blood donation.
         </p>
         
         <div className="bg-white p-6 md:p-8 rounded-lg shadow-md">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Name */}
               <div className="col-span-1 md:col-span-2">
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                  Full Name *
-                </label>
-                <input
-                  type="text"
+                <Label htmlFor="name">Full Name *</Label>
+                <Input
                   id="name"
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  className={`w-full p-3 border rounded-md ${errors.name ? 'border-red-500' : 'border-gray-300'}`}
+                  className={errors.name ? 'border-red-500' : ''}
                   placeholder="Enter your full name"
                 />
                 {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
@@ -137,10 +136,8 @@ const DonorRegistration = () => {
               
               {/* Age */}
               <div>
-                <label htmlFor="age" className="block text-sm font-medium text-gray-700 mb-1">
-                  Age *
-                </label>
-                <input
+                <Label htmlFor="age">Age *</Label>
+                <Input
                   type="number"
                   id="age"
                   name="age"
@@ -148,7 +145,7 @@ const DonorRegistration = () => {
                   onChange={handleChange}
                   min="18"
                   max="65"
-                  className={`w-full p-3 border rounded-md ${errors.age ? 'border-red-500' : 'border-gray-300'}`}
+                  className={errors.age ? 'border-red-500' : ''}
                   placeholder="Your age"
                 />
                 {errors.age && <p className="text-red-500 text-sm mt-1">{errors.age}</p>}
@@ -156,9 +153,7 @@ const DonorRegistration = () => {
               
               {/* Gender */}
               <div>
-                <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-1">
-                  Gender *
-                </label>
+                <Label htmlFor="gender">Gender *</Label>
                 <select
                   id="gender"
                   name="gender"
@@ -176,16 +171,13 @@ const DonorRegistration = () => {
               
               {/* Location */}
               <div className="col-span-1 md:col-span-2">
-                <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
-                  Location / Address *
-                </label>
-                <input
-                  type="text"
+                <Label htmlFor="location">Location / Address *</Label>
+                <Input
                   id="location"
                   name="location"
                   value={formData.location}
                   onChange={handleChange}
-                  className={`w-full p-3 border rounded-md ${errors.location ? 'border-red-500' : 'border-gray-300'}`}
+                  className={errors.location ? 'border-red-500' : ''}
                   placeholder="Your city and area"
                 />
                 {errors.location && <p className="text-red-500 text-sm mt-1">{errors.location}</p>}
@@ -193,9 +185,7 @@ const DonorRegistration = () => {
               
               {/* Blood Group */}
               <div>
-                <label htmlFor="bloodGroup" className="block text-sm font-medium text-gray-700 mb-1">
-                  Blood Group *
-                </label>
+                <Label htmlFor="bloodGroup">Blood Group *</Label>
                 <select
                   id="bloodGroup"
                   name="bloodGroup"
@@ -215,16 +205,14 @@ const DonorRegistration = () => {
               
               {/* Phone */}
               <div>
-                <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-                  Phone Number *
-                </label>
-                <input
+                <Label htmlFor="phone">Phone Number *</Label>
+                <Input
                   type="tel"
                   id="phone"
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  className={`w-full p-3 border rounded-md ${errors.phone ? 'border-red-500' : 'border-gray-300'}`}
+                  className={errors.phone ? 'border-red-500' : ''}
                   placeholder="10-digit phone number"
                 />
                 {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
@@ -232,16 +220,14 @@ const DonorRegistration = () => {
               
               {/* Email */}
               <div className="col-span-1 md:col-span-2">
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                  Email Address *
-                </label>
-                <input
+                <Label htmlFor="email">Email Address *</Label>
+                <Input
                   type="email"
                   id="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`w-full p-3 border rounded-md ${errors.email ? 'border-red-500' : 'border-gray-300'}`}
+                  className={errors.email ? 'border-red-500' : ''}
                   placeholder="Your email address"
                 />
                 {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}

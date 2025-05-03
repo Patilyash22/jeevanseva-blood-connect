@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { bloodGroups, Donor } from '@/types/donor';
 import { searchDonors } from '@/utils/storage';
+import { useToast } from '@/hooks/use-toast';
 
 const FindDonor = () => {
   const [location, setLocation] = useState('');
@@ -9,8 +10,9 @@ const FindDonor = () => {
   const [searchResults, setSearchResults] = useState<Donor[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
+  const { toast } = useToast();
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!location.trim()) return;
@@ -18,12 +20,19 @@ const FindDonor = () => {
     setIsSearching(true);
     setHasSearched(true);
     
-    // Simulate a bit of delay to make the search feel real
-    setTimeout(() => {
-      const results = searchDonors(location.trim(), bloodGroup);
+    try {
+      const results = await searchDonors(location.trim(), bloodGroup);
       setSearchResults(results);
+    } catch (error) {
+      toast({
+        title: "Search Failed",
+        description: "There was a problem searching for donors. Please try again.",
+        variant: "destructive",
+      });
+      console.error("Search error:", error);
+    } finally {
       setIsSearching(false);
-    }, 800);
+    }
   };
 
   return (
