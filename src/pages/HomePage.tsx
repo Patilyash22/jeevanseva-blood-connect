@@ -1,6 +1,6 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
+import BloodCompatibilityChart from '@/components/BloodCompatibilityChart';
 
 const HomePage = () => {
   return (
@@ -65,63 +65,15 @@ const HomePage = () => {
         </div>
       </div>
 
-      {/* Blood Groups Info */}
+      {/* Blood Groups Info - Updated with Interactive Chart */}
       <div className="bg-jeevanseva-light py-12">
         <div className="container mx-auto px-4 md:px-6">
           <h2 className="text-3xl font-bold mb-8 text-center">Blood Group Compatibility</h2>
-          <div className="overflow-x-auto">
-            <table className="w-full bg-white shadow-md rounded-lg overflow-hidden">
-              <thead className="bg-jeevanseva-red text-white">
-                <tr>
-                  <th className="py-3 px-4 text-left">Blood Group</th>
-                  <th className="py-3 px-4 text-left">Can Donate To</th>
-                  <th className="py-3 px-4 text-left">Can Receive From</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b border-gray-200">
-                  <td className="py-3 px-4 font-semibold">A+</td>
-                  <td className="py-3 px-4">A+, AB+</td>
-                  <td className="py-3 px-4">A+, A-, O+, O-</td>
-                </tr>
-                <tr className="border-b border-gray-200">
-                  <td className="py-3 px-4 font-semibold">A-</td>
-                  <td className="py-3 px-4">A+, A-, AB+, AB-</td>
-                  <td className="py-3 px-4">A-, O-</td>
-                </tr>
-                <tr className="border-b border-gray-200">
-                  <td className="py-3 px-4 font-semibold">B+</td>
-                  <td className="py-3 px-4">B+, AB+</td>
-                  <td className="py-3 px-4">B+, B-, O+, O-</td>
-                </tr>
-                <tr className="border-b border-gray-200">
-                  <td className="py-3 px-4 font-semibold">B-</td>
-                  <td className="py-3 px-4">B+, B-, AB+, AB-</td>
-                  <td className="py-3 px-4">B-, O-</td>
-                </tr>
-                <tr className="border-b border-gray-200">
-                  <td className="py-3 px-4 font-semibold">AB+</td>
-                  <td className="py-3 px-4">AB+</td>
-                  <td className="py-3 px-4">All blood types</td>
-                </tr>
-                <tr className="border-b border-gray-200">
-                  <td className="py-3 px-4 font-semibold">AB-</td>
-                  <td className="py-3 px-4">AB+, AB-</td>
-                  <td className="py-3 px-4">A-, B-, AB-, O-</td>
-                </tr>
-                <tr className="border-b border-gray-200">
-                  <td className="py-3 px-4 font-semibold">O+</td>
-                  <td className="py-3 px-4">A+, B+, AB+, O+</td>
-                  <td className="py-3 px-4">O+, O-</td>
-                </tr>
-                <tr>
-                  <td className="py-3 px-4 font-semibold">O-</td>
-                  <td className="py-3 px-4">All blood types</td>
-                  <td className="py-3 px-4">O-</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <p className="text-center mb-8 max-w-3xl mx-auto">
+            Understanding blood type compatibility is crucial for successful transfusions. 
+            Select your blood group below to see who you can donate to and receive from.
+          </p>
+          <BloodCompatibilityChart />
         </div>
       </div>
 
