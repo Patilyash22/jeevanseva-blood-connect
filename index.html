@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,6 +6,7 @@
   <title>JeevanSeva - Blood Donation Initiative</title>
   <link rel="stylesheet" href="styles.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
   <header>
@@ -32,8 +32,8 @@
     </div>
   </header>
   
-  <main>
-    <!-- Hero Section -->
+  
+    
     <section class="hero">
       <div class="container">
         <div class="hero-content">
@@ -51,7 +51,7 @@
       </div>
     </section>
 
-    <!-- How It Works -->
+    
     <section class="how-it-works">
       <div class="container">
         <h2>How It Works</h2>
@@ -75,7 +75,7 @@
       </div>
     </section>
 
-    <!-- Blood Group Compatibility -->
+    
     <section class="blood-compatibility">
       <div class="container">
         <h2>Blood Group Compatibility</h2>
@@ -107,19 +107,19 @@
                 </tr>
               </thead>
               <tbody id="compatibility-data">
-                <!-- Blood compatibility data will be inserted here by JavaScript -->
+                
               </tbody>
             </table>
           </div>
 
           <div id="compatibility-summary" class="compatibility-summary hidden">
-            <!-- Compatibility summary will be inserted here by JavaScript -->
+            
           </div>
         </div>
       </div>
     </section>
 
-    <!-- CTA Section -->
+    
     <section class="cta-section">
       <div class="container">
         <div class="cta-box">
@@ -129,18 +129,28 @@
         </div>
       </div>
     </section>
-  </main>
+  
 
-  <footer>
-    <div class="container">
-      <div class="footer-content">
-        <div class="footer-logo">
-          <div class="blood-drop"></div>
-          <span>JeevanSeva</span>
-        </div>
-        <p class="tagline">An initiative by VNest Technologies And Platforms Pvt. Ltd.</p>
-        <div class="footer-links">
-          <div class="link-column">
+  <footer class="modern-footer">
+    <div class="footer-top">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <div class="logo">
+              <div class="blood-drop"></div>
+              <span>JeevanSeva</span>
+            </div>
+            <p class="tagline">An initiative by VNest Technologies And Platforms Pvt. Ltd.</p>
+            <p class="mission-statement">Our mission is to connect blood donors with recipients, creating a community that responds quickly to medical emergencies and saves lives.</p>
+            <div class="social-links">
+              <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+              <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+              <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+              <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+          </div>
+          
+          <div class="footer-links">
             <h4>Quick Links</h4>
             <ul>
               <li><a href="index.html">Home</a></li>
@@ -150,17 +160,47 @@
               <li><a href="contact.html">Contact</a></li>
             </ul>
           </div>
-          <div class="link-column">
+          
+          <div class="footer-links">
+            <h4>Resources</h4>
+            <ul>
+              <li><a href="#">Donation Process</a></li>
+              <li><a href="#">FAQs</a></li>
+              <li><a href="#">Blog</a></li>
+              <li><a href="#">News & Events</a></li>
+              <li><a href="#">Privacy Policy</a></li>
+            </ul>
+          </div>
+          
+          <div class="footer-contact">
             <h4>Contact Us</h4>
             <ul>
-              <li><a href="tel:9529081894">+91 9529081894</a></li>
-              <li><a href="mailto:contact@vnest.tech">contact@vnest.tech</a></li>
+              <li>
+                <i class="fas fa-phone"></i>
+                <a href="tel:+919529081894">+91 9529081894</a>
+              </li>
+              <li>
+                <i class="fas fa-envelope"></i>
+                <a href="mailto:contact@vnest.tech">contact@vnest.tech</a>
+              </li>
+              <li>
+                <i class="fas fa-map-marker-alt"></i>
+                <span>VNest Technologies, Jaipur, Rajasthan, India</span>
+              </li>
             </ul>
           </div>
         </div>
       </div>
-      <div class="footer-bottom">
+    </div>
+    
+    <div class="footer-bottom">
+      <div class="container">
         <p>&copy; 2025 JeevanSeva. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="#">Terms of Service</a>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Cookie Policy</a>
+        </div>
       </div>
     </div>
   </footer>

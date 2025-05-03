@@ -74,11 +74,16 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
   }
+  
+  // Initialize form submission handlers
+  setupFormHandlers();
 });
 
 // Populate the compatibility table with all blood groups
 function populateCompatibilityTable() {
   const tableBody = document.getElementById('compatibility-data');
+  if (!tableBody) return;
+  
   tableBody.innerHTML = '';
   
   bloodGroups.forEach(group => {
@@ -146,6 +151,7 @@ function updateCompatibilityHighlighting(selectedGroup) {
 // Update the compatibility summary
 function updateCompatibilitySummary(selectedGroup) {
   const summaryDiv = document.getElementById('compatibility-summary');
+  if (!summaryDiv) return;
   
   if (!selectedGroup) {
     summaryDiv.classList.add('hidden');
@@ -164,86 +170,206 @@ function updateCompatibilitySummary(selectedGroup) {
   `;
 }
 
+// Set up form handlers
+function setupFormHandlers() {
+  // Donor registration form
+  const donorForm = document.getElementById('donor-registration-form');
+  if (donorForm) {
+    donorForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      if (!validateForm(donorForm)) {
+        return;
+      }
+      
+      const formData = {
+        name: donorForm.name.value,
+        age: parseInt(donorForm.age.value),
+        bloodGroup: donorForm.bloodGroup.value,
+        email: donorForm.email.value,
+        phone: donorForm.phone.value,
+        location: donorForm.location.value,
+        lastDonation: donorForm.lastDonation ? donorForm.lastDonation.value : null,
+        medicalConditions: donorForm.medicalConditions ? donorForm.medicalConditions.value : null
+      };
+      
+      try {
+        showLoadingIndicator();
+        const result = await addDonor(formData);
+        hideLoadingIndicator();
+        
+        if (result && result.id) {
+          showToast('Donor registration successful!', 'success');
+          donorForm.reset();
+        } else {
+          throw new Error('Failed to register');
+        }
+      } catch (error) {
+        hideLoadingIndicator();
+        showToast('Registration failed: ' + error.message, 'error');
+      }
+    });
+  }
+  
+  // Find donor form
+  const searchForm = document.getElementById('donor-search-form');
+  if (searchForm) {
+    searchForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const location = searchForm.location.value;
+      const bloodGroup = searchForm.bloodGroup.value;
+      
+      if (!location && !bloodGroup) {
+        showToast('Please enter a location or select a blood group', 'error');
+        return;
+      }
+      
+      try {
+        showLoadingIndicator();
+        const donors = await searchDonors(location, bloodGroup);
+        hideLoadingIndicator();
+        
+        displaySearchResults(donors);
+      } catch (error) {
+        hideLoadingIndicator();
+        showToast('Search failed: ' + error.message, 'error');
+      }
+    });
+  }
+}
+
 // API functions
 async function getDonors() {
-  try {
-    const response = await fetch(`${API_BASE_URL}/donors`);
-    if (!response.ok) {
-      throw new Error('Failed to fetch donors');
-    }
-    return await response.json();
-  } catch (error) {
-    console.error('Error fetching donors:', error);
-    return [];
+  const response = await fetch(`${API_BASE_URL}/donors`);
+  
+  if (!response.ok) {
+    throw new Error('Failed to fetch donors');
   }
+  
+  return await response.json();
 }
 
 async function addDonor(donor) {
-  try {
-    const response = await fetch(`${API_BASE_URL}/donors`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(donor),
-    });
-    
-    if (!response.ok) {
-      throw new Error('Failed to add donor');
-    }
-    
-    return await response.json();
-  } catch (error) {
-    console.error('Error adding donor:', error);
-    // For now, fall back to local storage if API fails
-    const newDonor = {
-      ...donor,
-      id: generateUUID(),
-      createdAt: new Date().toISOString(),
-    };
-    
-    // Store in local storage as fallback
-    const donors = JSON.parse(localStorage.getItem('jeevanseva-donors') || '[]');
-    localStorage.setItem('jeevanseva-donors', JSON.stringify([...donors, newDonor]));
-    
-    return newDonor;
+  const response = await fetch(`${API_BASE_URL}/donors`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(donor),
+  });
+  
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to add donor');
   }
+  
+  return await response.json();
 }
 
 async function searchDonors(location, bloodGroup) {
-  try {
-    const queryParams = new URLSearchParams();
-    if (location) queryParams.append('location', location);
-    if (bloodGroup) queryParams.append('bloodGroup', bloodGroup);
+  const queryParams = new URLSearchParams();
+  if (location) queryParams.append('location', location);
+  if (bloodGroup) queryParams.append('bloodGroup', bloodGroup);
+  
+  const response = await fetch(`${API_BASE_URL}/donors/search?${queryParams.toString()}`);
+  
+  if (!response.ok) {
+    throw new Error('Failed to search donors');
+  }
+  
+  return await response.json();
+}
+
+// Display search results
+function displaySearchResults(donors) {
+  const resultsContainer = document.getElementById('search-results');
+  if (!resultsContainer) return;
+  
+  resultsContainer.innerHTML = '';
+  
+  if (donors.length === 0) {
+    resultsContainer.innerHTML = `
+      <div class="no-results">
+        <p>No donors found matching your criteria.</p>
+        <p>Please try broadening your search or check back later.</p>
+      </div>
+    `;
+    return;
+  }
+  
+  const resultsGrid = document.createElement('div');
+  resultsGrid.className = 'results-grid';
+  
+  donors.forEach(donor => {
+    const donorCard = document.createElement('div');
+    donorCard.className = 'donor-card';
     
-    const response = await fetch(`${API_BASE_URL}/donors/search?${queryParams.toString()}`);
+    // Calculate months since last donation
+    const lastDonationText = donor.lastDonation 
+      ? calculateTimeSince(donor.lastDonation) 
+      : 'Not specified';
     
-    if (!response.ok) {
-      throw new Error('Failed to search donors');
-    }
+    donorCard.innerHTML = `
+      <div class="donor-blood-group">${donor.bloodGroup}</div>
+      <h3>${donor.name}, ${donor.age}</h3>
+      <div class="donor-location">
+        <i class="fas fa-map-marker-alt"></i> ${donor.location}
+      </div>
+      <div class="donor-details">
+        <p><strong>Last Donation:</strong> ${lastDonationText}</p>
+        <a href="mailto:${donor.email}" class="donor-contact">
+          <i class="fas fa-envelope"></i> Contact via Email
+        </a>
+        <a href="tel:${donor.phone}" class="donor-contact">
+          <i class="fas fa-phone"></i> ${donor.phone}
+        </a>
+      </div>
+    `;
     
-    return await response.json();
-  } catch (error) {
-    console.error('Error searching donors:', error);
-    // Fall back to local storage if API fails
-    const donors = JSON.parse(localStorage.getItem('jeevanseva-donors') || '[]');
-    
-    return donors.filter(donor => {
-      const matchesLocation = donor.location.toLowerCase().includes(location.toLowerCase());
-      const matchesBloodGroup = bloodGroup ? donor.bloodGroup === bloodGroup : true;
-      
-      return matchesLocation && matchesBloodGroup;
-    });
+    resultsGrid.appendChild(donorCard);
+  });
+  
+  resultsContainer.appendChild(resultsGrid);
+}
+
+// Calculate time since last donation
+function calculateTimeSince(dateString) {
+  const lastDonation = new Date(dateString);
+  const now = new Date();
+  
+  const diffTime = Math.abs(now - lastDonation);
+  const diffMonths = Math.ceil(diffTime / (1000 * 60 * 60 * 24 * 30));
+  
+  if (diffMonths < 1) {
+    return 'Less than a month ago';
+  } else if (diffMonths === 1) {
+    return '1 month ago';
+  } else {
+    return `${diffMonths} months ago`;
   }
 }
 
-// Helper function to generate UUID
-function generateUUID() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    const r = (Math.random() * 16) | 0,
-      v = c === 'x' ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
+// Show loading indicator
+function showLoadingIndicator() {
+  let loader = document.querySelector('.loader-overlay');
+  
+  if (!loader) {
+    loader = document.createElement('div');
+    loader.className = 'loader-overlay';
+    loader.innerHTML = '<div class="loader"></div>';
+    document.body.appendChild(loader);
+  }
+  
+  loader.style.display = 'flex';
+}
+
+// Hide loading indicator
+function hideLoadingIndicator() {
+  const loader = document.querySelector('.loader-overlay');
+  if (loader) {
+    loader.style.display = 'none';
+  }
 }
 
 // Toast notifications
