@@ -66,7 +66,27 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     sessionStorage.removeItem('scrollToResults');
   }
+  
+  // Check if there's a hash in URL for FAQ
+  checkUrlHashForSection();
 });
+
+// Check if URL has hash to scroll to a specific section
+function checkUrlHashForSection() {
+  if (window.location.hash) {
+    const targetElement = document.getElementById(window.location.hash.substring(1));
+    if (targetElement) {
+      setTimeout(() => {
+        targetElement.scrollIntoView({ behavior: 'smooth' });
+        
+        // If it's an accordion item, open it
+        if (targetElement.closest('.accordion-item')) {
+          targetElement.closest('.accordion-item').classList.add('active');
+        }
+      }, 300);
+    }
+  }
+}
 
 // Initialize blood compatibility chart
 function initializeBloodCompatibility() {

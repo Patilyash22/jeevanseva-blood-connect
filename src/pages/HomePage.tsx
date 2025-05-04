@@ -1,8 +1,37 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import BloodCompatibilityChart from '@/components/BloodCompatibilityChart';
+import FAQSection from '@/components/FAQSection';
 
 const HomePage = () => {
+  const faqs = [
+    {
+      question: "How can I become a blood donor?",
+      answer: (
+        <p>To become a blood donor, simply navigate to our "Become a Donor" page and fill out the registration form. You'll need to provide basic personal information and contact details.</p>
+      )
+    },
+    {
+      question: "Who can donate blood?",
+      answer: (
+        <p>Generally, anyone between 18-65 years old, weighing at least 50 kg, and in good health can donate blood. You should not have any active infections or blood-borne diseases.</p>
+      )
+    },
+    {
+      question: "How often can I donate blood?",
+      answer: (
+        <p>Most healthy adults can donate blood every 12 weeks (3 months). This timeframe allows your body to replenish the red blood cells that are lost during donation.</p>
+      )
+    },
+    {
+      question: "How does JeevanSeva ensure donor-recipient matching?",
+      answer: (
+        <p>JeevanSeva uses blood group compatibility and location data to match donors with recipients. Our system ensures that the best possible matches are made quickly when there's an emergency need for blood.</p>
+      )
+    }
+  ];
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
@@ -75,6 +104,11 @@ const HomePage = () => {
           </p>
           <BloodCompatibilityChart />
         </div>
+      </div>
+
+      {/* FAQ Section */}
+      <div className="py-12">
+        <FAQSection faqs={faqs} />
       </div>
 
       {/* CTA Section */}

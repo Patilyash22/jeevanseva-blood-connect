@@ -1,6 +1,8 @@
 
 import React, { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import FAQSection from '@/components/FAQSection';
+import { Map, Info } from 'lucide-react';
 
 const ContactPage = () => {
   const { toast } = useToast();
@@ -67,6 +69,56 @@ const ContactPage = () => {
       setIsSubmitting(false);
     }, 1000);
   };
+
+  const faqs = [
+    {
+      question: "How can I become a blood donor?",
+      answer: (
+        <p>To become a blood donor, navigate to our "Become a Donor" page and fill out the registration form. You'll need to provide basic information like name, age, blood group, and contact details.</p>
+      )
+    },
+    {
+      question: "Is my personal information kept secure?",
+      answer: (
+        <p>Yes, we take data security seriously. Your personal information is stored securely and only shared with verified blood recipients who need your blood type. You can review our privacy policy for more details.</p>
+      )
+    },
+    {
+      question: "How often can I donate blood?",
+      answer: (
+        <p>Most healthy adults can donate blood every 12 weeks (3 months). This timeframe allows your body to replenish red blood cells lost during donation. Always consult with a healthcare professional for personalized advice.</p>
+      )
+    },
+    {
+      question: "What happens during the blood donation process?",
+      answer: (
+        <div>
+          <p>The blood donation process typically takes about 30-45 minutes and includes these steps:</p>
+          <ol className="list-decimal ml-5 mt-2 space-y-1">
+            <li>Registration and ID verification</li>
+            <li>Brief medical history and mini-physical examination</li>
+            <li>The actual donation (approximately 10 minutes)</li>
+            <li>Rest and refreshments (15-20 minutes)</li>
+          </ol>
+        </div>
+      )
+    },
+    {
+      question: "What should I do before donating blood?",
+      answer: (
+        <div>
+          <p>Before donating blood, make sure to:</p>
+          <ul className="list-disc ml-5 mt-2 space-y-1">
+            <li>Get a good night's sleep</li>
+            <li>Eat a healthy meal within 3 hours before donation</li>
+            <li>Drink plenty of water</li>
+            <li>Avoid alcohol for 24 hours before donation</li>
+            <li>Bring a valid ID card</li>
+          </ul>
+        </div>
+      )
+    }
+  ];
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-8">
@@ -199,6 +251,22 @@ const ContactPage = () => {
                 
                 <div className="flex items-start">
                   <div className="flex-shrink-0 mt-1">
+                    <Map className="w-5 h-5 text-jeevanseva-red" />
+                  </div>
+                  <div className="ml-3">
+                    <h3 className="text-sm font-medium text-jeevanseva-darkred">Address</h3>
+                    <p className="text-jeevanseva-gray">
+                      VNest Technologies And Platforms Pvt. Ltd.<br />
+                      Gala No. 8, Laxmi Narayan Apartment,<br />
+                      Opposite Fish Market, Vangaon (W),<br />
+                      Taluka Dahanu, District Palghar,<br />
+                      Maharashtra 401103, India
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start">
+                  <div className="flex-shrink-0 mt-1">
                     <svg className="w-5 h-5 text-jeevanseva-red" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
@@ -212,17 +280,29 @@ const ContactPage = () => {
             </div>
             
             <div className="bg-white p-6 md:p-8 rounded-lg shadow-md">
-              <h2 className="text-xl font-semibold mb-4 text-jeevanseva-darkred">About Us</h2>
-              <p className="text-jeevanseva-gray mb-4">
-                JeevanSeva is an initiative by VNest Technologies And Platforms Pvt. Ltd.
-              </p>
-              <p className="text-jeevanseva-gray">
-                Our mission is to bridge the gap between blood donors and people in need, making it easier to find and connect with willing donors during medical emergencies.
-              </p>
-              <a href="/about" className="inline-block mt-4 text-jeevanseva-red hover:underline">Learn more about us →</a>
+              <div className="aspect-w-16 aspect-h-9 mb-4 rounded-lg overflow-hidden">
+                <iframe 
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14951.926760527614!2d72.74355236035652!3d19.93250415868042!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be719fe9684d9fb%3A0xb2978e2185e8023e!2sVangaon%2C%20Maharashtra%20401103!5e0!3m2!1sen!2sin!4v1685953625400!5m2!1sen!2sin" 
+                  className="w-full h-full rounded-lg" 
+                  allowFullScreen 
+                  loading="lazy"
+                  title="VNest Technologies Location"
+                ></iframe>
+              </div>
+              <div className="flex items-center">
+                <Info className="w-5 h-5 text-jeevanseva-red mr-2" />
+                <p className="text-xs text-jeevanseva-gray">
+                  View our location on Google Maps
+                </p>
+              </div>
             </div>
           </div>
         </div>
+      </div>
+      
+      {/* FAQ Section */}
+      <div className="mt-16" id="faq">
+        <FAQSection faqs={faqs} />
       </div>
     </div>
   );

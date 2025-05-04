@@ -76,13 +76,14 @@
               </h3>
               <p>
                 VNest Technologies And Platforms Pvt. Ltd.<br>
-                Gala No. 8, Laxmi Narayan Apartment,Vangaon (W), Taluka Dahanu, District Palghar, Maharashtra 401103.<br>
-                India
+                Gala No. 8, Laxmi Narayan Apartment, Opposite Fish Market, <br>
+                Vangaon (W), Taluka Dahanu, District Palghar, <br>
+                Maharashtra 401103, India
               </p>
             </div>
             
             <div class="map-container">
-              <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d227748.99973450298!2d75.65046952858511!3d26.88514167956319!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396c4adf4c57e281%3A0xce1c63a0cf22e09!2sJaipur%2C%20Rajasthan!5e0!3m2!1sen!2sin!4v1685953625400!5m2!1sen!2sin" allowfullscreen="" loading="lazy"></iframe>
+              <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14951.926760527614!2d72.74355236035652!3d19.93250415868042!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be719fe9684d9fb%3A0xb2978e2185e8023e!2sVangaon%2C%20Maharashtra%20401103!5e0!3m2!1sen!2sin!4v1685953625400!5m2!1sen!2sin" allowfullscreen="" loading="lazy"></iframe>
             </div>
           </div>
           
@@ -159,6 +160,53 @@
               <p>Most healthy adults can donate blood every 12 weeks (3 months). This timeframe allows your body to replenish the red blood cells that are lost during donation. However, it's always best to consult with a healthcare professional.</p>
             </div>
           </div>
+          <div class="accordion-item">
+            <div class="accordion-header">
+              <h3>What are the eligibility requirements for blood donation?</h3>
+              <span class="accordion-icon"><i class="fas fa-chevron-down"></i></span>
+            </div>
+            <div class="accordion-content">
+              <p>Generally, donors must be at least 18 years old, weigh at least 50 kg, and be in good health. You should not have any active infections or blood-borne diseases. Specific medical conditions may also affect eligibility. Our medical team will conduct a brief screening before donation.</p>
+              <img src="https://images.unsplash.com/photo-1579165466741-7f35e4755182?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Blood donation screening" class="faq-image">
+            </div>
+          </div>
+          <div class="accordion-item">
+            <div class="accordion-header">
+              <h3>What should I do before donating blood?</h3>
+              <span class="accordion-icon"><i class="fas fa-chevron-down"></i></span>
+            </div>
+            <div class="accordion-content">
+              <p>Before donating blood, make sure to:</p>
+              <ul>
+                <li>Get a good night's sleep</li>
+                <li>Eat a healthy meal within 3 hours before donation</li>
+                <li>Drink plenty of water</li>
+                <li>Avoid alcohol for 24 hours before donation</li>
+                <li>Bring a valid ID card</li>
+              </ul>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <div class="accordion-header">
+              <h3>What happens during the blood donation process?</h3>
+              <span class="accordion-icon"><i class="fas fa-chevron-down"></i></span>
+            </div>
+            <div class="accordion-content">
+              <div class="faq-content-with-image">
+                <div>
+                  <p>The blood donation process typically takes about 30-45 minutes and includes these steps:</p>
+                  <ol>
+                    <li>Registration and ID verification</li>
+                    <li>Brief medical history and mini-physical examination</li>
+                    <li>The actual donation (approximately 10 minutes)</li>
+                    <li>Rest and refreshments (15-20 minutes)</li>
+                  </ol>
+                  <p>The actual blood drawing process is quick and relatively painless.</p>
+                </div>
+                <img src="https://images.unsplash.com/photo-1615461066841-6116e61058f4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Blood donation process" class="faq-image">
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -218,7 +266,7 @@
               </li>
               <li>
                 <i class="fas fa-map-marker-alt"></i>
-                <span>VNest Technologies, Jaipur, Rajasthan, India</span>
+                <span>VNest Technologies, Gala No. 8, Laxmi Narayan Apartment, Vangaon, Maharashtra</span>
               </li>
             </ul>
           </div>
@@ -242,62 +290,15 @@
   <script src="script.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Initialize accordion functionality
-      const accordionItems = document.querySelectorAll('.accordion-item');
-      accordionItems.forEach(item => {
-        const header = item.querySelector('.accordion-header');
-        header.addEventListener('click', () => {
-          item.classList.toggle('active');
-        });
-      });
+      // Initialize accordion functionality for all accordion items
+      initializeAccordions();
       
       // Contact form submission
       const contactForm = document.getElementById('contactForm');
       
-      contactForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        if (!validateForm(contactForm)) {
-          return;
-        }
-        
-        // Get form data
-        const formData = {
-          name: document.getElementById('name').value.trim(),
-          email: document.getElementById('email').value.trim(),
-          subject: document.getElementById('subject').value,
-          message: document.getElementById('message').value.trim(),
-          timestamp: new Date().toISOString()
-        };
-        
-        // Disable submit button and show loading state
-        const submitBtn = document.getElementById('submitBtn');
-        const btnText = submitBtn.querySelector('.btn-text');
-        const originalText = btnText.textContent;
-        submitBtn.disabled = true;
-        btnText.textContent = 'Sending...';
-        
-        // Simulate sending the form data to a server
-        setTimeout(() => {
-          // In a real application, you would send this data to your server
-          console.log('Form data:', formData);
-          
-          // Store in local storage for demo purposes
-          const messages = JSON.parse(localStorage.getItem('jeevanseva-messages') || '[]');
-          messages.push(formData);
-          localStorage.setItem('jeevanseva-messages', JSON.stringify(messages));
-          
-          // Show success message
-          showToast('Your message has been sent! We will get back to you soon.', 'success');
-          
-          // Reset form
-          contactForm.reset();
-          
-          // Re-enable submit button
-          submitBtn.disabled = false;
-          btnText.textContent = originalText;
-        }, 1500);
-      });
+      if (contactForm) {
+        contactForm.addEventListener('submit', handleContactForm);
+      }
     });
   </script>
 </body>
