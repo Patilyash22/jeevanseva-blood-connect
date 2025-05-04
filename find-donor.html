@@ -7,6 +7,7 @@
   <title>Find a Donor - JeevanSeva</title>
   <link rel="stylesheet" href="styles.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     /* Additional styles for find donor page */
     .search-form {
@@ -285,7 +286,9 @@
               </div>
               
               <div class="form-group" style="display: flex; align-items: flex-end;">
-                <button type="submit" id="searchBtn" class="btn-submit" style="width: 100%;">Search Donors</button>
+                <button type="submit" id="searchBtn" class="btn-submit">
+                  <i class="fas fa-search"></i> Search Donors
+                </button>
               </div>
             </div>
           </form>
@@ -312,20 +315,47 @@
             <li>If your need is urgent, consider also contacting local blood banks and hospitals.</li>
           </ul>
         </div>
+
+        <div class="emergency-contact" style="margin-top: 30px; padding: 25px; border-radius: 10px; background-color: #FEF2F2; border-left: 4px solid #DC2626;">
+          <h3 style="color: #DC2626; margin-bottom: 15px;"><i class="fas fa-exclamation-circle"></i> Emergency Contact</h3>
+          <p>In case of urgent requirement, you can contact our 24×7 emergency helpline:</p>
+          <p style="font-size: 1.2rem; margin: 10px 0;"><a href="tel:+919529081894" style="color: #DC2626; font-weight: 600;"><i class="fas fa-phone"></i> +91 9529081894</a></p>
+          <p>Our team will help coordinate with nearest available donors in your area.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-section" style="padding: 40px 0;">
+      <div class="container">
+        <div class="cta-box" style="background: linear-gradient(135deg, #F87171, #DC2626);">
+          <h2>Ready to Help Others?</h2>
+          <p>Register as a donor today and be part of our lifesaving network.</p>
+          <a href="donor-registration.html" class="btn btn-light"><i class="fas fa-user-plus"></i> Register as Donor</a>
+        </div>
       </div>
     </section>
   </main>
 
-  <footer>
-    <div class="container">
-      <div class="footer-content">
-        <div class="footer-logo">
-          <div class="blood-drop"></div>
-          <span>JeevanSeva</span>
-        </div>
-        <p class="tagline">An initiative by VNest Technologies And Platforms Pvt. Ltd.</p>
-        <div class="footer-links">
-          <div class="link-column">
+  <footer class="modern-footer">
+    <div class="footer-top">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <div class="logo">
+              <div class="blood-drop"></div>
+              <span>JeevanSeva</span>
+            </div>
+            <p class="tagline">An initiative by VNest Technologies And Platforms Pvt. Ltd.</p>
+            <p class="mission-statement">Our mission is to connect blood donors with recipients, creating a community that responds quickly to medical emergencies and saves lives.</p>
+            <div class="social-links">
+              <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+              <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+              <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+              <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+          </div>
+          
+          <div class="footer-links">
             <h4>Quick Links</h4>
             <ul>
               <li><a href="index.html">Home</a></li>
@@ -335,17 +365,47 @@
               <li><a href="contact.html">Contact</a></li>
             </ul>
           </div>
-          <div class="link-column">
+          
+          <div class="footer-links">
+            <h4>Resources</h4>
+            <ul>
+              <li><a href="#">Donation Process</a></li>
+              <li><a href="contact.html#faq">FAQs</a></li>
+              <li><a href="#">Blog</a></li>
+              <li><a href="#">News & Events</a></li>
+              <li><a href="#">Privacy Policy</a></li>
+            </ul>
+          </div>
+          
+          <div class="footer-contact">
             <h4>Contact Us</h4>
             <ul>
-              <li><a href="tel:9529081894">+91 9529081894</a></li>
-              <li><a href="mailto:contact@vnest.tech">contact@vnest.tech</a></li>
+              <li>
+                <i class="fas fa-phone"></i>
+                <a href="tel:+919529081894">+91 9529081894</a>
+              </li>
+              <li>
+                <i class="fas fa-envelope"></i>
+                <a href="mailto:contact@vnest.tech">contact@vnest.tech</a>
+              </li>
+              <li>
+                <i class="fas fa-map-marker-alt"></i>
+                <span>VNest Technologies, Gala No. 8, Laxmi Narayan Apartment, Opposite Fish Market, Vangaon (W), Taluka Dahanu, District Palghar, Maharashtra 401103</span>
+              </li>
             </ul>
           </div>
         </div>
       </div>
-      <div class="footer-bottom">
+    </div>
+    
+    <div class="footer-bottom">
+      <div class="container">
         <p>&copy; 2025 JeevanSeva. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="#">Terms of Service</a>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Cookie Policy</a>
+        </div>
       </div>
     </div>
   </footer>
@@ -393,10 +453,15 @@
         
         try {
           // Disable search button
-          document.getElementById('searchBtn').disabled = true;
-          document.getElementById('searchBtn').textContent = 'Searching...';
+          const searchBtn = document.getElementById('searchBtn');
+          searchBtn.disabled = true;
+          searchBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Searching...';
           
           // Make the search request
+          // For demo, simulate a network delay
+          await new Promise(resolve => setTimeout(resolve, 1500));
+          
+          // Mock data - in a real app, this would come from an API
           const results = await searchDonors(location, bloodGroup);
           
           // Update title with results count
@@ -433,9 +498,9 @@
                   </td>
                   <td data-label="Location">${donor.location}</td>
                   <td data-label="Contact" class="donor-contact">
-                    <div><a href="tel:${donor.phone}">${donor.phone}</a></div>
+                    <div><a href="tel:${donor.phone}"><i class="fas fa-phone"></i> ${donor.phone}</a></div>
                     <div style="font-size: 0.85rem;">
-                      <a href="mailto:${donor.email}">${donor.email}</a>
+                      <a href="mailto:${donor.email}"><i class="fas fa-envelope"></i> ${donor.email}</a>
                     </div>
                   </td>
                 </tr>
@@ -448,6 +513,9 @@
             `;
             
             resultsContent.innerHTML = tableHTML;
+            
+            // Scroll to results
+            searchResultsContainer.scrollIntoView({ behavior: 'smooth' });
           } else {
             // Show no results message
             resultsContent.innerHTML = `
@@ -479,11 +547,66 @@
           `;
         } finally {
           // Re-enable search button
-          document.getElementById('searchBtn').disabled = false;
-          document.getElementById('searchBtn').textContent = 'Search Donors';
+          const searchBtn = document.getElementById('searchBtn');
+          searchBtn.disabled = false;
+          searchBtn.innerHTML = '<i class="fas fa-search"></i> Search Donors';
           isSearching = false;
         }
       });
+
+      // Mock function to search donors
+      async function searchDonors(location, bloodGroup) {
+        // This is a mock function for demo purposes
+        // In a real app, this would make an API call
+        
+        // Sample data
+        const mockDonors = [
+          {
+            name: "Rajesh Kumar",
+            age: 28,
+            gender: "Male",
+            bloodGroup: "A+",
+            location: "Vangaon, Maharashtra",
+            phone: "9876543210",
+            email: "rajesh@example.com"
+          },
+          {
+            name: "Priya Sharma",
+            age: 32,
+            gender: "Female",
+            bloodGroup: "O+",
+            location: "Dahanu, Maharashtra",
+            phone: "9876543211",
+            email: "priya@example.com"
+          },
+          {
+            name: "Vikram Singh",
+            age: 45,
+            gender: "Male",
+            bloodGroup: "B+",
+            location: "Vangaon, Maharashtra",
+            phone: "9876543212",
+            email: "vikram@example.com"
+          },
+          {
+            name: "Anita Desai",
+            age: 29,
+            gender: "Female",
+            bloodGroup: "AB-",
+            location: "Dahanu, Maharashtra",
+            phone: "9876543213",
+            email: "anita@example.com"
+          }
+        ];
+        
+        // Filter based on search criteria
+        return mockDonors.filter(donor => {
+          const matchesLocation = donor.location.toLowerCase().includes(location.toLowerCase());
+          const matchesBloodGroup = !bloodGroup || donor.bloodGroup === bloodGroup;
+          
+          return matchesLocation && matchesBloodGroup;
+        });
+      }
     });
   </script>
 </body>
