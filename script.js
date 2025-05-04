@@ -44,40 +44,231 @@ const compatibilityMap = {
 
 const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
-// API base URL
-const API_BASE_URL = 'https://api.jeevanseva.vnest.tech/api';
-
-// Initialize the blood compatibility chart
+// Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
   // Set up the compatibility table
   const compatibilityData = document.getElementById('compatibility-data');
   if (compatibilityData) {
-    populateCompatibilityTable();
-    
-    // Add event listeners to blood group buttons
-    const bloodGroupButtons = document.querySelectorAll('.blood-group-btn');
-    bloodGroupButtons.forEach(button => {
-      button.addEventListener('click', function() {
-        const selectedGroup = this.getAttribute('data-group');
-        
-        // Remove active class from all buttons
-        bloodGroupButtons.forEach(btn => btn.classList.remove('active'));
-        
-        // Add active class to clicked button
-        this.classList.add('active');
-        
-        // Update compatibility highlighting
-        updateCompatibilityHighlighting(selectedGroup);
-        
-        // Show compatibility summary
-        updateCompatibilitySummary(selectedGroup);
-      });
-    });
+    initializeBloodCompatibility();
   }
   
   // Initialize form submission handlers
-  setupFormHandlers();
+  initializeForms();
+
+  // Initialize FAQs if present
+  initializeAccordions();
+
+  // Check if we need to scroll to results (after page reload)
+  if (sessionStorage.getItem('scrollToResults')) {
+    const resultsElement = document.getElementById('search-results');
+    if (resultsElement) {
+      resultsElement.scrollIntoView({ behavior: 'smooth' });
+    }
+    sessionStorage.removeItem('scrollToResults');
+  }
 });
+
+// Initialize blood compatibility chart
+function initializeBloodCompatibility() {
+  populateCompatibilityTable();
+  
+  // Add event listeners to blood group buttons
+  const bloodGroupButtons = document.querySelectorAll('.blood-group-btn');
+  bloodGroupButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const selectedGroup = this.getAttribute('data-group');
+      
+      // Remove active class from all buttons
+      bloodGroupButtons.forEach(btn => btn.classList.remove('active'));
+      
+      // Add active class to clicked button
+      this.classList.add('active');
+      
+      // Update compatibility highlighting
+      updateCompatibilityHighlighting(selectedGroup);
+      
+      // Show compatibility summary
+      updateCompatibilitySummary(selectedGroup);
+    });
+  });
+
+  // Select O- by default (universal donor)
+  const defaultButton = document.querySelector('.blood-group-btn[data-group="O-"]');
+  if (defaultButton) {
+    defaultButton.click();
+  }
+}
+
+// Initialize accordion functionality
+function initializeAccordions() {
+  const accordionItems = document.querySelectorAll('.accordion-item');
+  
+  accordionItems.forEach(item => {
+    const header = item.querySelector('.accordion-header');
+    if (header) {
+      header.addEventListener('click', () => {
+        // Toggle current item
+        item.classList.toggle('active');
+        
+        // Close other items (optional)
+        accordionItems.forEach(otherItem => {
+          if (otherItem !== item && otherItem.classList.contains('active')) {
+            otherItem.classList.remove('active');
+          }
+        });
+      });
+    }
+  });
+}
+
+// Initialize form handlers
+function initializeForms() {
+  // Donor registration form
+  const donorForm = document.getElementById('donor-registration-form');
+  if (donorForm) {
+    donorForm.addEventListener('submit', handleDonorRegistration);
+  }
+  
+  // Find donor form
+  const searchForm = document.getElementById('donor-search-form');
+  if (searchForm) {
+    searchForm.addEventListener('submit', handleDonorSearch);
+  }
+
+  // Contact form
+  const contactForm = document.getElementById('contactForm');
+  if (contactForm) {
+    contactForm.addEventListener('submit', handleContactForm);
+  }
+}
+
+// Handle donor registration form submission
+async function handleDonorRegistration(e) {
+  e.preventDefault();
+  
+  if (!validateForm(this)) {
+    return;
+  }
+  
+  const formData = {
+    name: this.name.value.trim(),
+    age: parseInt(this.age.value),
+    gender: this.gender.value,
+    bloodGroup: this.bloodGroup.value,
+    location: this.location.value.trim(),
+    phone: this.phone.value.trim(),
+    email: this.email.value.trim(),
+    lastDonation: this.lastDonation ? this.lastDonation.value : null,
+    medicalConditions: this.medicalConditions ? this.medicalConditions.value : null
+  };
+  
+  try {
+    showLoadingIndicator();
+    // Use our database module
+    const result = await window.jeevanSevaDB.addDonor(formData);
+    hideLoadingIndicator();
+    
+    if (result && result.id) {
+      showToast('Thank you! Your registration was successful.', 'success');
+      this.reset();
+      
+      // Redirect after a delay
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 2000);
+    } else {
+      throw new Error('Failed to register');
+    }
+  } catch (error) {
+    hideLoadingIndicator();
+    showToast('Registration failed: ' + error.message, 'error');
+  }
+}
+
+// Handle donor search form submission
+async function handleDonorSearch(e) {
+  e.preventDefault();
+  
+  const location = this.location.value.trim();
+  const bloodGroup = this.bloodGroup.value;
+  
+  if (!location && !bloodGroup) {
+    showToast('Please enter a location or select a blood group', 'error');
+    return;
+  }
+  
+  try {
+    showLoadingIndicator();
+    // Use our database module
+    const donors = await window.jeevanSevaDB.searchDonors(location, bloodGroup);
+    hideLoadingIndicator();
+    
+    displaySearchResults(donors);
+    
+    // Store a flag to scroll to results if page reloads
+    sessionStorage.setItem('scrollToResults', 'true');
+    
+    // Scroll to results
+    const resultsElement = document.getElementById('search-results');
+    if (resultsElement) {
+      resultsElement.scrollIntoView({ behavior: 'smooth' });
+    }
+  } catch (error) {
+    hideLoadingIndicator();
+    showToast('Search failed: ' + error.message, 'error');
+  }
+}
+
+// Handle contact form submission
+function handleContactForm(e) {
+  e.preventDefault();
+  
+  if (!validateForm(this)) {
+    return;
+  }
+  
+  // Get form data
+  const formData = {
+    name: document.getElementById('name').value.trim(),
+    email: document.getElementById('email').value.trim(),
+    subject: document.getElementById('subject').value,
+    message: document.getElementById('message').value.trim(),
+    timestamp: new Date().toISOString()
+  };
+  
+  // Disable submit button and show loading state
+  const submitBtn = document.getElementById('submitBtn');
+  const btnText = submitBtn.querySelector('.btn-text');
+  const btnIcon = submitBtn.querySelector('.btn-icon');
+  const originalText = btnText.textContent;
+  const originalIcon = btnIcon.innerHTML;
+  
+  submitBtn.disabled = true;
+  btnText.textContent = 'Sending...';
+  btnIcon.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+  
+  // Simulate sending the form data to a server
+  setTimeout(() => {
+    // In a real application, you would send this data to your server
+    console.log('Form data:', formData);
+    
+    // Store in local storage for demo purposes
+    const messages = JSON.parse(localStorage.getItem('jeevanseva-messages') || '[]');
+    messages.push(formData);
+    localStorage.setItem('jeevanseva-messages', JSON.stringify(messages));
+    
+    // Show success message
+    showToast('Your message has been sent! We will get back to you soon.', 'success');
+    
+    // Reset form
+    this.reset();
+    
+    // Re-enable submit button
+    submitBtn.disabled = false;
+    btnText.textContent = originalText;
+    btnIcon.innerHTML = originalIcon;
+  }, 1500);
+}
 
 // Populate the compatibility table with all blood groups
 function populateCompatibilityTable() {
@@ -167,118 +358,14 @@ function updateCompatibilitySummary(selectedGroup) {
     <h4>Blood Group ${selectedGroup} Compatibility:</h4>
     <p><strong>Can donate to: </strong><span class="compatibility-tag">${donateList}</span></p>
     <p><strong>Can receive from: </strong><span class="compatibility-tag">${receiveList}</span></p>
+    
+    <div class="compatibility-note">
+      <p><small>
+        <i class="fas fa-info-circle"></i> 
+        For emergency transfusions, please always consult healthcare professionals.
+      </small></p>
+    </div>
   `;
-}
-
-// Set up form handlers
-function setupFormHandlers() {
-  // Donor registration form
-  const donorForm = document.getElementById('donor-registration-form');
-  if (donorForm) {
-    donorForm.addEventListener('submit', async function(e) {
-      e.preventDefault();
-      
-      if (!validateForm(donorForm)) {
-        return;
-      }
-      
-      const formData = {
-        name: donorForm.name.value,
-        age: parseInt(donorForm.age.value),
-        bloodGroup: donorForm.bloodGroup.value,
-        email: donorForm.email.value,
-        phone: donorForm.phone.value,
-        location: donorForm.location.value,
-        lastDonation: donorForm.lastDonation ? donorForm.lastDonation.value : null,
-        medicalConditions: donorForm.medicalConditions ? donorForm.medicalConditions.value : null
-      };
-      
-      try {
-        showLoadingIndicator();
-        const result = await addDonor(formData);
-        hideLoadingIndicator();
-        
-        if (result && result.id) {
-          showToast('Donor registration successful!', 'success');
-          donorForm.reset();
-        } else {
-          throw new Error('Failed to register');
-        }
-      } catch (error) {
-        hideLoadingIndicator();
-        showToast('Registration failed: ' + error.message, 'error');
-      }
-    });
-  }
-  
-  // Find donor form
-  const searchForm = document.getElementById('donor-search-form');
-  if (searchForm) {
-    searchForm.addEventListener('submit', async function(e) {
-      e.preventDefault();
-      
-      const location = searchForm.location.value;
-      const bloodGroup = searchForm.bloodGroup.value;
-      
-      if (!location && !bloodGroup) {
-        showToast('Please enter a location or select a blood group', 'error');
-        return;
-      }
-      
-      try {
-        showLoadingIndicator();
-        const donors = await searchDonors(location, bloodGroup);
-        hideLoadingIndicator();
-        
-        displaySearchResults(donors);
-      } catch (error) {
-        hideLoadingIndicator();
-        showToast('Search failed: ' + error.message, 'error');
-      }
-    });
-  }
-}
-
-// API functions
-async function getDonors() {
-  const response = await fetch(`${API_BASE_URL}/donors`);
-  
-  if (!response.ok) {
-    throw new Error('Failed to fetch donors');
-  }
-  
-  return await response.json();
-}
-
-async function addDonor(donor) {
-  const response = await fetch(`${API_BASE_URL}/donors`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(donor),
-  });
-  
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || 'Failed to add donor');
-  }
-  
-  return await response.json();
-}
-
-async function searchDonors(location, bloodGroup) {
-  const queryParams = new URLSearchParams();
-  if (location) queryParams.append('location', location);
-  if (bloodGroup) queryParams.append('bloodGroup', bloodGroup);
-  
-  const response = await fetch(`${API_BASE_URL}/donors/search?${queryParams.toString()}`);
-  
-  if (!response.ok) {
-    throw new Error('Failed to search donors');
-  }
-  
-  return await response.json();
 }
 
 // Display search results
@@ -291,8 +378,17 @@ function displaySearchResults(donors) {
   if (donors.length === 0) {
     resultsContainer.innerHTML = `
       <div class="no-results">
-        <p>No donors found matching your criteria.</p>
-        <p>Please try broadening your search or check back later.</p>
+        <div style="font-size: 3rem; margin-bottom: 20px;">😕</div>
+        <h3 style="font-size: 1.3rem; margin-bottom: 15px;">No donors found</h3>
+        <p class="mb-4">We couldn't find any donors matching your search criteria.</p>
+        <div class="tips">
+          <p>Try:</p>
+          <ul style="list-style-type: disc; padding-left: 20px; text-align: left;">
+            <li>Searching for a different location</li>
+            <li>Searching for any blood group</li>
+            <li>Using a broader location (e.g., city name instead of specific area)</li>
+          </ul>
+        </div>
       </div>
     `;
     return;
@@ -312,12 +408,12 @@ function displaySearchResults(donors) {
     
     donorCard.innerHTML = `
       <div class="donor-blood-group">${donor.bloodGroup}</div>
-      <h3>${donor.name}, ${donor.age}</h3>
+      <h3 style="margin: 5px 0 10px;">${donor.name}, ${donor.age}</h3>
       <div class="donor-location">
         <i class="fas fa-map-marker-alt"></i> ${donor.location}
       </div>
       <div class="donor-details">
-        <p><strong>Last Donation:</strong> ${lastDonationText}</p>
+        ${donor.lastDonation ? `<p><strong>Last Donation:</strong> ${lastDonationText}</p>` : ''}
         <a href="mailto:${donor.email}" class="donor-contact">
           <i class="fas fa-envelope"></i> Contact via Email
         </a>
@@ -374,9 +470,20 @@ function hideLoadingIndicator() {
 
 // Toast notifications
 function showToast(message, type = 'success') {
+  const toastId = 'toast-' + Date.now();
   const toast = document.createElement('div');
+  toast.id = toastId;
   toast.className = `toast toast-${type}`;
-  toast.textContent = message;
+  
+  // Set icon based on toast type
+  let icon = '';
+  if (type === 'success') {
+    icon = '<span class="toast-icon"><i class="fas fa-check-circle"></i></span>';
+  } else if (type === 'error') {
+    icon = '<span class="toast-icon"><i class="fas fa-exclamation-circle"></i></span>';
+  }
+  
+  toast.innerHTML = `${icon}<span>${message}</span>`;
   
   document.body.appendChild(toast);
   
@@ -385,13 +492,16 @@ function showToast(message, type = 'success') {
     toast.classList.add('show');
   }, 10);
   
-  // Hide the toast after 3 seconds
+  // Hide the toast after 4 seconds
   setTimeout(() => {
     toast.classList.remove('show');
     setTimeout(() => {
-      document.body.removeChild(toast);
+      const toastElement = document.getElementById(toastId);
+      if (toastElement) {
+        document.body.removeChild(toastElement);
+      }
     }, 300);
-  }, 3000);
+  }, 4000);
 }
 
 // Form validation helper
@@ -438,7 +548,7 @@ function showInputError(input, message) {
   
   const errorElement = document.createElement('div');
   errorElement.className = 'error-message';
-  errorElement.textContent = message;
+  errorElement.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
   
   formGroup.appendChild(errorElement);
   formGroup.classList.add('error');
