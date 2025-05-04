@@ -1,3 +1,4 @@
+
 :root {
   --jeevanseva-red: #e53e3e;
   --jeevanseva-darkred: #c53030;
@@ -1108,4 +1109,6 @@ nav ul li a:hover, nav ul li a.active {
   .blood-drop-large {
     width: 180px;
     height: 180px;
-    margin-bottom
+    margin-bottom: 20px;
+  }
+}
