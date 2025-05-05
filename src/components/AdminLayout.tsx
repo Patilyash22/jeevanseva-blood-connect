@@ -15,7 +15,7 @@ const AdminLayout: React.FC = () => {
   return (
     <div className="flex h-screen bg-gray-100">
       <AdminSidebar />
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-auto p-0">
         <Outlet />
       </div>
     </div>
