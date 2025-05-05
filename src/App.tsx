@@ -12,6 +12,10 @@ import FindDonor from "@/pages/FindDonor";
 import AboutPage from "@/pages/AboutPage";
 import ContactPage from "@/pages/ContactPage";
 import NotFound from "@/pages/NotFound";
+import AdminPanel from "@/pages/AdminPanel";
+import AdminLogin from "@/pages/AdminLogin";
+import AdminLayout from "@/components/AdminLayout";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 const queryClient = new QueryClient();
 
@@ -20,22 +24,31 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
-        <div className="flex flex-col min-h-screen">
-          <Navbar />
-          <main className="flex-grow">
+      <AuthProvider>
+        <BrowserRouter>
+          <div className="flex flex-col min-h-screen">
             <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/donor-registration" element={<DonorRegistration />} />
-              <Route path="/find-donor" element={<FindDonor />} />
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="/contact" element={<ContactPage />} />
-              <Route path="*" element={<NotFound />} />
+              {/* Public Routes */}
+              <Route path="/" element={<><Navbar /><HomePage /><Footer /></>} />
+              <Route path="/donor-registration" element={<><Navbar /><DonorRegistration /><Footer /></>} />
+              <Route path="/find-donor" element={<><Navbar /><FindDonor /><Footer /></>} />
+              <Route path="/about" element={<><Navbar /><AboutPage /><Footer /></>} />
+              <Route path="/contact" element={<><Navbar /><ContactPage /><Footer /></>} />
+              <Route path="/admin/login" element={<AdminLogin />} />
+              
+              {/* Admin Routes */}
+              <Route path="/admin" element={<AdminLayout />}>
+                <Route index element={<AdminPanel />} />
+                <Route path="donors" element={<AdminPanel activeTab="donors" />} />
+                <Route path="users" element={<AdminPanel activeTab="users" />} />
+                <Route path="settings" element={<AdminPanel activeTab="settings" />} />
+              </Route>
+              
+              <Route path="*" element={<><Navbar /><NotFound /><Footer /></>} />
             </Routes>
-          </main>
-          <Footer />
-        </div>
-      </BrowserRouter>
+          </div>
+        </BrowserRouter>
+      </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
