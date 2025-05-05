@@ -68,25 +68,12 @@ export default {
 					darkred: '#b91c1c',
 					light: '#fef2f2',
 					gray: '#4a5568',
-					lightgray: '#f7fafc',
-					accent: '#fed7d7',
 				}
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)'
-			},
-			boxShadow: {
-				'card': '0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06)',
-				'card-hover': '0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05)',
-				'button': '0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08)',
-				'nav': '0 2px 4px rgba(0,0,0,0.08)',
-			},
-			fontFamily: {
-				sans: ['Poppins', 'sans-serif'], 
-				heading: ['Playfair Display', 'serif'],
-				logo: ['Montserrat', 'sans-serif'],
 			},
 			keyframes: {
 				'accordion-down': {
@@ -108,23 +95,12 @@ export default {
 				pulse: {
 					'0%, 100%': { opacity: '1' },
 					'50%': { opacity: '0.5' },
-				},
-				fadeIn: {
-					'0%': { opacity: '0', transform: 'translateY(10px)' },
-					'100%': { opacity: '1', transform: 'translateY(0)' },
-				},
-				float: {
-					'0%': { transform: 'translateY(0)' },
-					'50%': { transform: 'translateY(-10px)' },
-					'100%': { transform: 'translateY(0)' },
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-				'fade-in': 'fadeIn 0.5s ease-out forwards',
-				'float': 'float 6s ease-in-out infinite',
 			}
 		}
 	},
