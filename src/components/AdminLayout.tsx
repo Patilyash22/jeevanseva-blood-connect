@@ -20,7 +20,7 @@ const AdminLayout: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen bg-gray-100 admin-container">
       {/* Mobile sidebar toggle */}
       <div className="lg:hidden absolute top-4 left-4 z-50">
         <Button 
@@ -37,12 +37,12 @@ const AdminLayout: React.FC = () => {
       <div className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} 
                        transition-transform duration-300 ease-in-out
                        lg:translate-x-0 fixed lg:static inset-y-0 left-0 z-40 
-                       lg:z-0 lg:w-64 h-screen`}>
+                       lg:z-0 lg:w-64 h-screen shadow-lg`}>
         <AdminSidebar />
       </div>
       
       {/* Main content */}
-      <div className="flex-1 overflow-auto p-0 lg:p-0 w-full">
+      <div className="flex-1 overflow-auto p-0 lg:p-0 w-full content-area">
         <div className="p-4 md:p-6 max-w-7xl mx-auto">
           <Outlet />
         </div>

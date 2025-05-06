@@ -51,6 +51,54 @@
   padding: 20px;
 }
 
+/* Donor count specific styles */
+.donor-count {
+  background: linear-gradient(135deg, var(--jeevanseva-red), var(--jeevanseva-darkred));
+  color: white;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.donor-count:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.donor-count-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0.5rem 0;
+}
+
+.donor-count-label {
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+/* Blood group badges */
+.blood-group-badge {
+  display: inline-block;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  background-color: var(--jeevanseva-light);
+  color: var(--jeevanseva-red);
+}
+
+/* Table custom styling */
+.custom-table th {
+  background-color: var(--jeevanseva-lightgray);
+  color: var(--jeevanseva-darkgray);
+  font-weight: 600;
+}
+
+.custom-table tr:hover {
+  background-color: rgba(254, 215, 215, 0.1);
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .blood-drop {
@@ -64,4 +112,58 @@
     top: 4px;
     left: 4px;
   }
+
+  .donor-count {
+    padding: 1rem;
+  }
+  
+  .donor-count-value {
+    font-size: 2rem;
+  }
+  
+  .donor-count-label {
+    font-size: 0.9rem;
+  }
+}
+
+/* Animation for donor count values */
+@keyframes countUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.donor-count-value {
+  animation: countUp 1s ease-out forwards;
+}
+
+/* Custom styles for donor management and user management tables */
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.status-active {
+  background-color: #C6F6D5;
+  color: #22543D;
+}
+
+.status-inactive {
+  background-color: #FED7D7;
+  color: #822727;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  font-weight: 500;
 }

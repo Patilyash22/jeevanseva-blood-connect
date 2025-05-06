@@ -68,7 +68,7 @@ const AdminDashboard: React.FC = () => {
       {/* Stats Cards */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         {statistics.map((stat, index) => (
-          <Card key={index} className="shadow-sm transition-all hover:shadow-md">
+          <Card key={index} className="stat-card shadow-sm transition-all hover:shadow-md">
             <CardContent className="p-6">
               <div className="flex justify-between">
                 <div>
@@ -105,12 +105,21 @@ const AdminDashboard: React.FC = () => {
               {bloodInventory.map((item, index) => (
                 <div key={index} className="space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="font-medium">{item.type}</span>
+                    <span className="font-medium">
+                      <span className="inline-block w-8 h-8 rounded-full bg-jeevanseva-light text-jeevanseva-red mr-2 text-center leading-8">
+                        {item.type}
+                      </span>
+                      {item.type}
+                    </span>
                     <span className="text-muted-foreground">
                       {item.current} / {item.target} units
                     </span>
                   </div>
-                  <Progress value={(item.current / item.target) * 100} />
+                  <Progress 
+                    value={(item.current / item.target) * 100} 
+                    className="h-2"
+                    indicatorClassName={item.current < 30 ? "bg-red-500" : item.current < 60 ? "bg-amber-500" : "bg-emerald-500"}
+                  />
                 </div>
               ))}
             </div>
@@ -141,6 +150,32 @@ const AdminDashboard: React.FC = () => {
             </div>
           </CardContent>
         </Card>
+      </div>
+
+      {/* Donor Count Section */}
+      <div className="mt-6">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <div className="donor-count">
+            <h3 className="donor-count-label">Total Blood Units Donated</h3>
+            <div className="donor-count-value">4,587</div>
+            <p className="donor-count-label">Last updated: Today</p>
+          </div>
+          <div className="donor-count">
+            <h3 className="donor-count-label">Active Donors</h3>
+            <div className="donor-count-value">1,245</div>
+            <p className="donor-count-label">Ready to donate</p>
+          </div>
+          <div className="donor-count">
+            <h3 className="donor-count-label">Lives Saved</h3>
+            <div className="donor-count-value">13,761</div>
+            <p className="donor-count-label">Estimated impact</p>
+          </div>
+          <div className="donor-count">
+            <h3 className="donor-count-label">Donation Camps</h3>
+            <div className="donor-count-value">72</div>
+            <p className="donor-count-label">This year</p>
+          </div>
+        </div>
       </div>
     </div>
   );
