@@ -41,7 +41,7 @@ const AdminLayout: React.FC = () => {
         <AdminSidebar />
       </div>
       
-      {/* Main content */}
+      {/* Main content - ensure proper padding for shared hosting */}
       <div className="flex-1 overflow-auto p-0 lg:p-0 w-full content-area">
         <div className="p-4 md:p-6 max-w-7xl mx-auto">
           <Outlet />
