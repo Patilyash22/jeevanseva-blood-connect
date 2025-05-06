@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
+import { X, Menu } from 'lucide-react';
 
 const Navbar = () => {
   const { isAuthenticated, isAdmin } = useAuth();
@@ -13,9 +14,9 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white shadow-md py-4">
+    <nav className="bg-white shadow-md py-4 sticky top-0 z-30">
       <div className="container mx-auto px-4 md:px-6">
-        <div className="flex flex-wrap justify-between items-center">
+        <div className="flex justify-between items-center">
           <div className="flex items-center">
             <div className="blood-drop"></div>
             <Link to="/" className="text-2xl font-bold text-jeevanseva-red">JeevanSeva</Link>
@@ -23,44 +24,71 @@ const Navbar = () => {
           
           {/* Mobile menu button */}
           <div className="md:hidden">
-            <button 
+            <Button 
               onClick={toggleMobileMenu}
-              className="text-gray-500 hover:text-gray-700 focus:outline-none"
+              className="text-gray-500 hover:text-gray-700 bg-transparent hover:bg-gray-100"
+              variant="ghost"
+              size="sm"
               aria-label="Toggle mobile menu"
             >
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                  d={mobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
-              </svg>
-            </button>
+              {mobileMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
+            </Button>
           </div>
           
           {/* Desktop Menu */}
-          <ul className={`${mobileMenuOpen ? 'block' : 'hidden'} md:flex w-full md:w-auto md:space-x-8 mt-4 md:mt-0 flex-col md:flex-row`}>
-            <li className="mb-2 md:mb-0"><Link to="/" className="text-jeevanseva-gray hover:text-jeevanseva-red transition block py-2 md:py-0">Home</Link></li>
-            <li className="mb-2 md:mb-0"><Link to="/donor-registration" className="text-jeevanseva-gray hover:text-jeevanseva-red transition block py-2 md:py-0">Become a Donor</Link></li>
-            <li className="mb-2 md:mb-0"><Link to="/find-donor" className="text-jeevanseva-gray hover:text-jeevanseva-red transition block py-2 md:py-0">Find Donor</Link></li>
-            <li className="mb-2 md:mb-0"><Link to="/about" className="text-jeevanseva-gray hover:text-jeevanseva-red transition block py-2 md:py-0">About</Link></li>
-            <li className="mb-2 md:mb-0"><Link to="/contact" className="text-jeevanseva-gray hover:text-jeevanseva-red transition block py-2 md:py-0">Contact</Link></li>
+          <div className="hidden md:flex items-center space-x-4">
+            <Link to="/" className="text-jeevanseva-gray hover:text-jeevanseva-red transition py-2">Home</Link>
+            <Link to="/donor-registration" className="text-jeevanseva-gray hover:text-jeevanseva-red transition py-2">Become a Donor</Link>
+            <Link to="/find-donor" className="text-jeevanseva-gray hover:text-jeevanseva-red transition py-2">Find Donor</Link>
+            <Link to="/about" className="text-jeevanseva-gray hover:text-jeevanseva-red transition py-2">About</Link>
+            <Link to="/contact" className="text-jeevanseva-gray hover:text-jeevanseva-red transition py-2">Contact</Link>
+            
             {isAdmin ? (
-              <li className="mb-2 md:mb-0">
-                <Link to="/admin">
-                  <Button variant="outline" size="sm" className="border-jeevanseva-red text-jeevanseva-red hover:bg-jeevanseva-light w-full md:w-auto">
+              <Link to="/admin">
+                <Button variant="outline" size="sm" className="border-jeevanseva-red text-jeevanseva-red hover:bg-jeevanseva-light">
+                  Admin Panel
+                </Button>
+              </Link>
+            ) : (
+              <Link to="/admin/login">
+                <Button variant="outline" size="sm" className="border-jeevanseva-red text-jeevanseva-red hover:bg-jeevanseva-light">
+                  Admin Login
+                </Button>
+              </Link>
+            )}
+          </div>
+        </div>
+        
+        {/* Mobile Menu Dropdown */}
+        {mobileMenuOpen && (
+          <div className="md:hidden mt-4 pb-4 border-t border-gray-200 pt-4">
+            <div className="flex flex-col space-y-3">
+              <Link to="/" className="text-jeevanseva-gray hover:text-jeevanseva-red transition py-2" onClick={() => setMobileMenuOpen(false)}>Home</Link>
+              <Link to="/donor-registration" className="text-jeevanseva-gray hover:text-jeevanseva-red transition py-2" onClick={() => setMobileMenuOpen(false)}>Become a Donor</Link>
+              <Link to="/find-donor" className="text-jeevanseva-gray hover:text-jeevanseva-red transition py-2" onClick={() => setMobileMenuOpen(false)}>Find Donor</Link>
+              <Link to="/about" className="text-jeevanseva-gray hover:text-jeevanseva-red transition py-2" onClick={() => setMobileMenuOpen(false)}>About</Link>
+              <Link to="/contact" className="text-jeevanseva-gray hover:text-jeevanseva-red transition py-2" onClick={() => setMobileMenuOpen(false)}>Contact</Link>
+              
+              {isAdmin ? (
+                <Link to="/admin" onClick={() => setMobileMenuOpen(false)}>
+                  <Button variant="outline" className="border-jeevanseva-red text-jeevanseva-red hover:bg-jeevanseva-light w-full">
                     Admin Panel
                   </Button>
                 </Link>
-              </li>
-            ) : (
-              <li className="mb-2 md:mb-0">
-                <Link to="/admin/login">
-                  <Button variant="outline" size="sm" className="border-jeevanseva-red text-jeevanseva-red hover:bg-jeevanseva-light w-full md:w-auto">
+              ) : (
+                <Link to="/admin/login" onClick={() => setMobileMenuOpen(false)}>
+                  <Button variant="outline" className="border-jeevanseva-red text-jeevanseva-red hover:bg-jeevanseva-light w-full">
                     Admin Login
                   </Button>
                 </Link>
-              </li>
-            )}
-          </ul>
-        </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   );
