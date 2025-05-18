@@ -24,12 +24,43 @@ session_start();
 
 // Function to check if user is logged in
 function isLoggedIn() {
-    return isset($_SESSION['admin_id']) && !empty($_SESSION['admin_id']);
+    return isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);
 }
 
 // Function to check if user is admin
 function isAdmin() {
-    return isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true;
+    return isLoggedIn() && isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true;
+}
+
+// Function to check admin permissions
+function hasPermission($permission) {
+    // If user is super admin, return true for any permission
+    if (isLoggedIn() && isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true) {
+        return true;
+    }
+    
+    // If user has a role with specific permission
+    if (isLoggedIn() && isset($_SESSION['permissions'])) {
+        $permissions = json_decode($_SESSION['permissions'], true);
+        
+        // If user has 'all' permission
+        if (isset($permissions['all']) && $permissions['all']) {
+            return true;
+        }
+        
+        // Check for specific permission
+        if (isset($permissions[$permission])) {
+            // Permission could be boolean or string (e.g., 'read', 'write')
+            if (is_bool($permissions[$permission])) {
+                return $permissions[$permission];
+            } else {
+                // For fine-grained permissions (read/write)
+                return true;
+            }
+        }
+    }
+    
+    return false;
 }
 
 // Function to sanitize input data
@@ -67,4 +98,72 @@ function getMessage() {
     }
     return null;
 }
+
+// Function to get site setting
+function getSetting($setting_name, $default = '') {
+    global $conn;
+    $sql = "SELECT setting_value FROM settings WHERE setting_name = '$setting_name'";
+    $result = mysqli_query($conn, $sql);
+    
+    if ($result && mysqli_num_rows($result) > 0) {
+        $row = mysqli_fetch_assoc($result);
+        return $row['setting_value'];
+    }
+    
+    return $default;
+}
+
+// Function to process credit transaction
+function processCredits($user_id, $amount, $type, $description, $reference_id = null) {
+    global $conn;
+    
+    // Begin transaction
+    mysqli_begin_transaction($conn);
+    
+    try {
+        // Update user credits
+        $sql = "UPDATE users SET credits = credits + ($amount) WHERE id = $user_id";
+        if (!mysqli_query($conn, $sql)) {
+            throw new Exception("Failed to update user credits: " . mysqli_error($conn));
+        }
+        
+        // Add transaction record
+        $reference_part = $reference_id ? ", reference_id" : "";
+        $reference_value = $reference_id ? ", $reference_id" : "";
+        
+        $sql = "INSERT INTO credits (user_id, amount, transaction_type, description$reference_part) 
+                VALUES ($user_id, $amount, '$type', '$description'$reference_value)";
+        
+        if (!mysqli_query($conn, $sql)) {
+            throw new Exception("Failed to record credit transaction: " . mysqli_error($conn));
+        }
+        
+        // Commit transaction
+        mysqli_commit($conn);
+        
+        // Update session credits if this is the current user
+        if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $user_id) {
+            $_SESSION['credits'] = $_SESSION['credits'] + $amount;
+        }
+        
+        return true;
+    } catch (Exception $e) {
+        // Roll back on error
+        mysqli_rollback($conn);
+        error_log($e->getMessage());
+        return false;
+    }
+}
+
+// Function to get translation
+function __($key, $default = null) {
+    // Placeholder for translation function - will be fully implemented later
+    // For now, just return the key or default text
+    return $default ?: $key;
+}
+
+// Load site settings
+$site_theme = getSetting('theme', 'light');
+$site_title = getSetting('site_title', 'JeevanSeva - Blood Donation Platform');
+$site_tagline = getSetting('site_tagline', 'Donate Blood, Save Lives');
 ?>
