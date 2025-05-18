@@ -1,9 +1,10 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
+import { Textarea } from '@/components/ui/textarea';
 import { 
   Card,
   CardContent,
@@ -14,6 +15,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from '@/hooks/use-toast';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const AdminSettings: React.FC = () => {
   const { toast } = useToast();
@@ -23,33 +25,75 @@ const AdminSettings: React.FC = () => {
   const [siteTagline, setSiteTagline] = useState('Connecting Lives Through Blood Donation');
   const [contactEmail, setContactEmail] = useState('contact@jeevanseva.org');
   const [contactPhone, setContactPhone] = useState('+91 9876543210');
+  const [siteDescription, setSiteDescription] = useState('JeevanSeva connects blood donors with those in need. Join our community and become a lifesaver.');
   
   // Feature toggles
   const [showDonorCount, setShowDonorCount] = useState(true);
   const [showTestimonials, setShowTestimonials] = useState(true);
   const [showCompatibilityMatrix, setShowCompatibilityMatrix] = useState(true);
+  const [enableReferrals, setEnableReferrals] = useState(true);
+  const [enableEmergencyRequests, setEnableEmergencyRequests] = useState(true);
   
   // Appearance settings
   const [primaryColor, setPrimaryColor] = useState('#e53e3e');
   const [secondaryColor, setSecondaryColor] = useState('#4a5568');
-  const [templateChoice, setTemplateChoice] = useState('modern');
+  const [currentTheme, setCurrentTheme] = useState('light');
+  const [language, setLanguage] = useState('english');
   
   // Credits settings
   const [initialCredits, setInitialCredits] = useState(20);
   const [referralCredits, setReferralCredits] = useState(10);
   const [contactViewCredits, setContactViewCredits] = useState(2);
+  const [minimumPurchase, setMinimumPurchase] = useState(10);
   
-  const handleSaveSettings = () => {
+  // Load settings from API (simulated)
+  useEffect(() => {
+    // This would normally fetch from an API
+    // Simulated timeout to mimic API fetch
+    const timer = setTimeout(() => {
+      // Settings loaded successfully
+      toast({
+        title: "Settings loaded",
+        description: "Current settings have been loaded successfully.",
+      });
+    }, 1000);
+    
+    return () => clearTimeout(timer);
+  }, [toast]);
+
+  const handleSaveGeneral = () => {
+    // This would normally send data to an API
     toast({
-      title: "Settings saved",
-      description: "Your changes have been saved successfully.",
+      title: "General settings saved",
+      description: "Your general settings have been updated successfully.",
+    });
+  };
+
+  const handleSaveFeatures = () => {
+    toast({
+      title: "Feature settings saved",
+      description: "Your feature toggles have been updated successfully.",
+    });
+  };
+
+  const handleSaveAppearance = () => {
+    toast({
+      title: "Appearance settings saved",
+      description: "Your appearance settings have been updated successfully.",
+    });
+  };
+
+  const handleSaveCredits = () => {
+    toast({
+      title: "Credit settings saved",
+      description: "Your credit system settings have been updated successfully.",
     });
   };
 
   return (
     <div className="space-y-6">
       <Tabs defaultValue="general">
-        <TabsList>
+        <TabsList className="grid grid-cols-4 w-full">
           <TabsTrigger value="general">General</TabsTrigger>
           <TabsTrigger value="features">Features</TabsTrigger>
           <TabsTrigger value="appearance">Appearance</TabsTrigger>
@@ -103,9 +147,19 @@ const AdminSettings: React.FC = () => {
                     onChange={(e) => setContactPhone(e.target.value)} 
                   />
                 </div>
+                
+                <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor="site-description">Hero Description</Label>
+                  <Textarea 
+                    id="site-description" 
+                    value={siteDescription} 
+                    onChange={(e) => setSiteDescription(e.target.value)} 
+                    className="min-h-[100px]"
+                  />
+                </div>
               </div>
               
-              <Button onClick={handleSaveSettings} className="bg-jeevanseva-red hover:bg-jeevanseva-darkred">
+              <Button onClick={handleSaveGeneral} className="bg-jeevanseva-red hover:bg-jeevanseva-darkred">
                 Save General Settings
               </Button>
             </CardContent>
@@ -121,7 +175,7 @@ const AdminSettings: React.FC = () => {
                 Toggle various features of your JeevanSeva portal.
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-6">
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -161,9 +215,35 @@ const AdminSettings: React.FC = () => {
                     onCheckedChange={setShowCompatibilityMatrix} 
                   />
                 </div>
+                
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-medium">Enable Referral System</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Allow users to refer others and earn credits
+                    </p>
+                  </div>
+                  <Switch 
+                    checked={enableReferrals} 
+                    onCheckedChange={setEnableReferrals} 
+                  />
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-medium">Enable Emergency Requests</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Allow users to submit urgent blood requests
+                    </p>
+                  </div>
+                  <Switch 
+                    checked={enableEmergencyRequests} 
+                    onCheckedChange={setEnableEmergencyRequests} 
+                  />
+                </div>
               </div>
               
-              <Button onClick={handleSaveSettings} className="bg-jeevanseva-red hover:bg-jeevanseva-darkred">
+              <Button onClick={handleSaveFeatures} className="bg-jeevanseva-red hover:bg-jeevanseva-darkred">
                 Save Feature Settings
               </Button>
             </CardContent>
@@ -194,6 +274,7 @@ const AdminSettings: React.FC = () => {
                     <Input 
                       value={primaryColor} 
                       onChange={(e) => setPrimaryColor(e.target.value)} 
+                      className="flex-1"
                     />
                   </div>
                 </div>
@@ -211,30 +292,45 @@ const AdminSettings: React.FC = () => {
                     <Input 
                       value={secondaryColor} 
                       onChange={(e) => setSecondaryColor(e.target.value)} 
+                      className="flex-1"
                     />
                   </div>
                 </div>
               </div>
               
               <div className="space-y-2 mt-4">
-                <Label>Template Style</Label>
-                <RadioGroup value={templateChoice} onValueChange={setTemplateChoice} className="flex flex-col space-y-1">
+                <Label>Theme</Label>
+                <RadioGroup value={currentTheme} onValueChange={setCurrentTheme} className="flex flex-col space-y-1">
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="modern" id="modern" />
-                    <Label htmlFor="modern" className="cursor-pointer">Modern (Current)</Label>
+                    <RadioGroupItem value="light" id="light" />
+                    <Label htmlFor="light" className="cursor-pointer">Light</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="classic" id="classic" />
-                    <Label htmlFor="classic" className="cursor-pointer">Classic</Label>
+                    <RadioGroupItem value="dark" id="dark" />
+                    <Label htmlFor="dark" className="cursor-pointer">Dark</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="minimalist" id="minimalist" />
-                    <Label htmlFor="minimalist" className="cursor-pointer">Minimalist</Label>
+                    <RadioGroupItem value="grey" id="grey" />
+                    <Label htmlFor="grey" className="cursor-pointer">Grey Flat</Label>
                   </div>
                 </RadioGroup>
               </div>
               
-              <Button onClick={handleSaveSettings} className="bg-jeevanseva-red hover:bg-jeevanseva-darkred">
+              <div className="space-y-2 mt-4">
+                <Label>Default Language</Label>
+                <Select value={language} onValueChange={setLanguage}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select language" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="english">English</SelectItem>
+                    <SelectItem value="hindi">Hindi</SelectItem>
+                    <SelectItem value="marathi">Marathi</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <Button onClick={handleSaveAppearance} className="bg-jeevanseva-red hover:bg-jeevanseva-darkred">
                 Save Appearance Settings
               </Button>
             </CardContent>
@@ -251,7 +347,7 @@ const AdminSettings: React.FC = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="initial-credits">Initial Credits</Label>
                   <Input 
@@ -285,7 +381,7 @@ const AdminSettings: React.FC = () => {
                   <Input 
                     id="contact-view-credits" 
                     type="number"
-                    min="0" 
+                    min="1" 
                     value={contactViewCredits} 
                     onChange={(e) => setContactViewCredits(parseInt(e.target.value))} 
                   />
@@ -293,9 +389,61 @@ const AdminSettings: React.FC = () => {
                     Credits deducted when viewing donor contact info
                   </p>
                 </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="minimum-purchase">Minimum Purchase</Label>
+                  <Input 
+                    id="minimum-purchase" 
+                    type="number"
+                    min="1" 
+                    value={minimumPurchase} 
+                    onChange={(e) => setMinimumPurchase(parseInt(e.target.value))} 
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Minimum number of credits that can be purchased
+                  </p>
+                </div>
               </div>
               
-              <Button onClick={handleSaveSettings} className="bg-jeevanseva-red hover:bg-jeevanseva-darkred">
+              <div className="space-y-2 mt-4">
+                <h3 className="font-medium">Credit Packages</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-lg">Basic Package</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-3xl font-bold">₹99</div>
+                      <p className="text-muted-foreground">10 Credits</p>
+                      <p className="text-xs text-muted-foreground mt-2">View 5 donor contacts</p>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-lg">Standard Package</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-3xl font-bold">₹199</div>
+                      <p className="text-muted-foreground">25 Credits</p>
+                      <p className="text-xs text-muted-foreground mt-2">View 12 donor contacts</p>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-lg">Premium Package</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-3xl font-bold">₹499</div>
+                      <p className="text-muted-foreground">75 Credits</p>
+                      <p className="text-xs text-muted-foreground mt-2">View 37 donor contacts</p>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+              
+              <Button onClick={handleSaveCredits} className="bg-jeevanseva-red hover:bg-jeevanseva-darkred">
                 Save Credits Settings
               </Button>
             </CardContent>

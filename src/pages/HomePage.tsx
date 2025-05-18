@@ -33,6 +33,12 @@ const HomePage = () => {
       answer: (
         <p>JeevanSeva uses blood group compatibility and location data to match donors with recipients. Our system ensures that the best possible matches are made quickly when there's an emergency need for blood.</p>
       )
+    },
+    {
+      question: "What happens to my personal information?",
+      answer: (
+        <p>Your personal information is kept secure and only shared with recipients who pay credits to view your contact details. We follow strict privacy guidelines and you can opt out at any time.</p>
+      )
     }
   ];
 
@@ -144,7 +150,10 @@ const HomePage = () => {
 
       {/* FAQ Section */}
       <div className="py-12 bg-jeevanseva-light">
-        <FAQSection faqs={faqs} />
+        <div className="container mx-auto px-4 md:px-6">
+          <h2 className="text-3xl font-bold mb-8 text-center">Frequently Asked Questions</h2>
+          <FAQSection faqs={faqs} />
+        </div>
       </div>
 
       {/* Partners Section */}

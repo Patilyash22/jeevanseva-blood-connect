@@ -4,7 +4,8 @@ require_once 'config.php';
 
 // Check if user is logged in
 if (!isLoggedIn()) {
-    redirect('login.php?redirect=find-donor.php');
+    setMessage("Please login to view donor details", "warning");
+    redirect('login.php?redirect=' . urlencode($_SERVER['REQUEST_URI']));
 }
 
 // Check if donor ID is provided
@@ -20,9 +21,37 @@ $sql = "SELECT * FROM credits WHERE user_id = $user_id AND reference_id = $donor
 $result = mysqli_query($conn, $sql);
 $has_paid = ($result && mysqli_num_rows($result) > 0);
 
-// If user hasn't paid and the donor isn't in session, redirect
+// Process payment if user hasn't paid
 if (!$has_paid && !isset($_SESSION['view_donor'])) {
-    redirect('find-donor.php');
+    // Check if user has enough credits
+    if (!hasEnoughCredits($user_id, 2)) {
+        setMessage("You don't have enough credits to view this donor. Please purchase more credits.", "danger");
+        redirect('buy-credits.php?redirect=' . urlencode($_SERVER['REQUEST_URI']));
+    }
+    
+    $sql = "SELECT * FROM donors WHERE id = $donor_id";
+    $result = mysqli_query($conn, $sql);
+    $donor = mysqli_fetch_assoc($result);
+    
+    if (!$donor) {
+        setMessage("Donor not found", "danger");
+        redirect('find-donor.php');
+    }
+    
+    // Process credit deduction
+    $success = processCredits($user_id, -2, 'view_donor', "Viewed donor #$donor_id", $donor_id);
+    
+    if (!$success) {
+        setMessage("Failed to process credits. Please try again.", "danger");
+        redirect('find-donor.php');
+    }
+    
+    // Store donor in session for this view only
+    $_SESSION['view_donor'] = $donor;
+    
+    // Record view in analytics
+    $sql = "INSERT INTO donor_views (donor_id, user_id, viewed_at) VALUES ($donor_id, $user_id, NOW())";
+    mysqli_query($conn, $sql);
 }
 
 // Get donor information
@@ -30,14 +59,17 @@ $donor = null;
 if (isset($_SESSION['view_donor']) && $_SESSION['view_donor']['id'] == $donor_id) {
     $donor = $_SESSION['view_donor'];
     unset($_SESSION['view_donor']); // Clear from session after retrieving
-} else {
+} else if ($has_paid) {
     $sql = "SELECT * FROM donors WHERE id = $donor_id";
     $result = mysqli_query($conn, $sql);
     $donor = mysqli_fetch_assoc($result);
+} else {
+    redirect('find-donor.php');
 }
 
 // If donor doesn't exist, redirect
 if (!$donor) {
+    setMessage("Donor not found", "danger");
     redirect('find-donor.php');
 }
 
@@ -63,7 +95,7 @@ include 'includes/header.php';
             
             <div class="donor-contact-info">
                 <h2>Contact Information</h2>
-                <p class="contact-note">You have been charged credits to access this information.</p>
+                <p class="contact-note">You have been charged 2 credits to access this information.</p>
                 
                 <div class="contact-details">
                     <div class="contact-item">

@@ -43,11 +43,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['is_admin'] = (bool)$user['is_admin'];
                 $_SESSION['credits'] = $user['credits'];
+                $_SESSION['permissions'] = $user['permissions'] ?? '';
                 
                 // Record last login
                 $user_id = $user['id'];
                 $update_sql = "UPDATE users SET last_login = NOW() WHERE id = $user_id";
                 mysqli_query($conn, $update_sql);
+                
+                // Track login activity
+                $ip_address = $_SERVER['REMOTE_ADDR'];
+                $user_agent = $_SERVER['HTTP_USER_AGENT'];
+                $activity_sql = "INSERT INTO user_activity (user_id, activity_type, ip_address, user_agent) 
+                                VALUES ($user_id, 'login', '$ip_address', '$user_agent')";
+                mysqli_query($conn, $activity_sql);
                 
                 // Redirect based on user role
                 if ($_SESSION['is_admin']) {

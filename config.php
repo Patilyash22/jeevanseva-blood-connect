@@ -155,6 +155,49 @@ function processCredits($user_id, $amount, $type, $description, $reference_id = 
     }
 }
 
+// Function to check if user has enough credits
+function hasEnoughCredits($user_id, $required_credits) {
+    global $conn;
+    
+    $sql = "SELECT credits FROM users WHERE id = $user_id";
+    $result = mysqli_query($conn, $sql);
+    
+    if ($result && mysqli_num_rows($result) > 0) {
+        $row = mysqli_fetch_assoc($result);
+        return $row['credits'] >= $required_credits;
+    }
+    
+    return false;
+}
+
+// Function to generate referral code
+function generateReferralCode($length = 8) {
+    $chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    $code = "";
+    
+    for ($i = 0; $i < $length; $i++) {
+        $code .= $chars[rand(0, strlen($chars) - 1)];
+    }
+    
+    return $code;
+}
+
+// Function to process referral
+function processReferral($referrer_id, $new_user_id) {
+    global $conn;
+    
+    // Record referral relationship
+    $sql = "INSERT INTO referrals (referrer_id, referred_id, created_at) 
+            VALUES ($referrer_id, $new_user_id, NOW())";
+    
+    if (mysqli_query($conn, $sql)) {
+        // Reward the referrer with credits
+        return processCredits($referrer_id, 10, 'referral', "Referral bonus for new user #$new_user_id");
+    }
+    
+    return false;
+}
+
 // Function to get translation
 function __($key, $default = null) {
     // Placeholder for translation function - will be fully implemented later

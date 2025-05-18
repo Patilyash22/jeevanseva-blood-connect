@@ -7,6 +7,7 @@ import {
   CarouselNext,
   CarouselPrevious
 } from '@/components/ui/carousel';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface Testimonial {
   id: number;
@@ -58,22 +59,15 @@ const TestimonialCarousel = () => {
     >
       <CarouselContent>
         {testimonials.map((testimonial) => (
-          <CarouselItem key={testimonial.id} className="md:basis-1/2 lg:basis-1/3">
+          <CarouselItem key={testimonial.id} className="md:basis-1/2 lg:basis-1/3 p-2">
             <div className="bg-white p-6 rounded-xl shadow-md h-full flex flex-col">
               <div className="mb-4 flex items-center">
-                <div className="w-12 h-12 rounded-full overflow-hidden mr-4 bg-jeevanseva-light flex items-center justify-center">
-                  {testimonial.avatar ? (
-                    <img 
-                      src={testimonial.avatar} 
-                      alt={testimonial.name} 
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <span className="text-xl font-bold text-jeevanseva-red">
-                      {testimonial.name.charAt(0)}
-                    </span>
-                  )}
-                </div>
+                <Avatar className="h-12 w-12 mr-4">
+                  <AvatarImage src={testimonial.avatar} alt={testimonial.name} />
+                  <AvatarFallback className="bg-jeevanseva-light text-jeevanseva-red">
+                    {testimonial.name.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
                 <div>
                   <h3 className="font-bold text-jeevanseva-darkred">{testimonial.name}</h3>
                   <p className="text-sm text-jeevanseva-gray">{testimonial.role}</p>
