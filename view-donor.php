@@ -1,6 +1,7 @@
 
 <?php
 require_once 'config.php';
+require_once 'app/Services/UserCreditService.php';
 
 // Check if user is logged in
 if (!isLoggedIn()) {
@@ -16,15 +17,22 @@ if (!isset($_GET['id'])) {
 $donor_id = (int)$_GET['id'];
 $user_id = $_SESSION['user_id'];
 
-// Check if user has paid to view this donor
-$sql = "SELECT * FROM credits WHERE user_id = $user_id AND reference_id = $donor_id AND transaction_type = 'view_donor'";
+// Get user and create credit service
+$sql = "SELECT * FROM users WHERE id = $user_id";
 $result = mysqli_query($conn, $sql);
-$has_paid = ($result && mysqli_num_rows($result) > 0);
+$user = mysqli_fetch_assoc($result);
+
+$creditService = new App\Services\UserCreditService();
+
+// Check if user has paid to view this donor
+$has_paid = $creditService->hasViewedDonor($user, $donor_id);
 
 // Process payment if user hasn't paid
 if (!$has_paid && !isset($_SESSION['view_donor'])) {
     // Check if user has enough credits
-    if (!hasEnoughCredits($user_id, 2)) {
+    $donor_view_cost = (int)getSetting('donor_view_cost', 2);
+    
+    if (!$creditService->hasEnoughCredits($user, $donor_view_cost)) {
         setMessage("You don't have enough credits to view this donor. Please purchase more credits.", "danger");
         redirect('buy-credits.php?redirect=' . urlencode($_SERVER['REQUEST_URI']));
     }
@@ -39,12 +47,15 @@ if (!$has_paid && !isset($_SESSION['view_donor'])) {
     }
     
     // Process credit deduction
-    $success = processCredits($user_id, -2, 'view_donor', "Viewed donor #$donor_id", $donor_id);
+    $success = $creditService->chargeDonorView($user, $donor_id);
     
     if (!$success) {
         setMessage("Failed to process credits. Please try again.", "danger");
         redirect('find-donor.php');
     }
+    
+    // Update session credits
+    $_SESSION['credits'] = $user['credits'] - $donor_view_cost;
     
     // Store donor in session for this view only
     $_SESSION['view_donor'] = $donor;
@@ -76,99 +87,114 @@ if (!$donor) {
 include 'includes/header.php';
 ?>
 
-<section class="view-donor-section">
-    <div class="container">
-        <div class="back-link">
-            <a href="find-donor.php"><i class="fas fa-arrow-left"></i> Back to Search</a>
+<section class="view-donor-section bg-white">
+    <div class="container mx-auto px-4 py-8">
+        <div class="back-link mb-4">
+            <a href="find-donor.php" class="text-jeevanseva-red hover:text-jeevanseva-darkred flex items-center">
+                <i class="fas fa-arrow-left mr-2"></i> Back to Search
+            </a>
         </div>
         
-        <div class="donor-profile">
-            <div class="donor-profile-header">
-                <div class="donor-avatar">
+        <div class="donor-profile bg-white shadow-lg rounded-lg overflow-hidden">
+            <div class="donor-profile-header bg-jeevanseva-light p-6 flex items-center border-b border-gray-200">
+                <div class="donor-avatar bg-jeevanseva-red text-white rounded-full w-16 h-16 flex items-center justify-center text-2xl font-bold mr-4">
                     <?php echo strtoupper(substr($donor['name'], 0, 1)); ?>
                 </div>
                 <div class="donor-name-info">
-                    <h1><?php echo $donor['name']; ?></h1>
-                    <div class="donor-blood-group"><?php echo $donor['blood_group']; ?></div>
+                    <h1 class="text-2xl font-bold text-gray-800"><?php echo $donor['name']; ?></h1>
+                    <div class="donor-blood-group inline-block px-3 py-1 rounded-full bg-jeevanseva-red text-white font-semibold mt-1"><?php echo $donor['blood_group']; ?></div>
                 </div>
             </div>
             
-            <div class="donor-contact-info">
-                <h2>Contact Information</h2>
-                <p class="contact-note">You have been charged 2 credits to access this information.</p>
+            <div class="donor-contact-info p-6 border-b border-gray-200">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Contact Information</h2>
+                <p class="contact-note text-sm bg-blue-50 text-blue-700 p-3 rounded mb-4 flex items-center">
+                    <i class="fas fa-info-circle mr-2"></i> You have been charged <?php echo getSetting('donor_view_cost', 2); ?> credits to access this information.
+                </p>
                 
-                <div class="contact-details">
-                    <div class="contact-item">
-                        <div class="contact-label">
-                            <i class="fas fa-envelope"></i> Email:
+                <div class="contact-details grid md:grid-cols-2 gap-4">
+                    <div class="contact-item p-3 bg-gray-50 rounded">
+                        <div class="contact-label text-gray-500 mb-1">
+                            <i class="fas fa-envelope mr-2"></i> Email:
                         </div>
-                        <div class="contact-value"><?php echo $donor['email']; ?></div>
+                        <div class="contact-value font-medium"><?php echo $donor['email']; ?></div>
                     </div>
                     
-                    <div class="contact-item">
-                        <div class="contact-label">
-                            <i class="fas fa-phone"></i> Phone:
+                    <div class="contact-item p-3 bg-gray-50 rounded">
+                        <div class="contact-label text-gray-500 mb-1">
+                            <i class="fas fa-phone mr-2"></i> Phone:
                         </div>
-                        <div class="contact-value">
-                            <?php echo $donor['phone']; ?>
-                            <a href="tel:<?php echo $donor['phone']; ?>" class="btn btn-sm btn-primary">Call</a>
+                        <div class="contact-value font-medium flex items-center justify-between">
+                            <span><?php echo $donor['phone']; ?></span>
+                            <a href="tel:<?php echo $donor['phone']; ?>" class="btn btn-sm bg-jeevanseva-red text-white px-3 py-1 rounded hover:bg-jeevanseva-darkred transition">
+                                <i class="fas fa-phone-alt mr-1"></i> Call
+                            </a>
                         </div>
                     </div>
                     
-                    <div class="contact-item">
-                        <div class="contact-label">
-                            <i class="fas fa-map-marker-alt"></i> Location:
+                    <div class="contact-item p-3 bg-gray-50 rounded md:col-span-2">
+                        <div class="contact-label text-gray-500 mb-1">
+                            <i class="fas fa-map-marker-alt mr-2"></i> Location:
                         </div>
-                        <div class="contact-value"><?php echo $donor['location']; ?></div>
+                        <div class="contact-value font-medium"><?php echo $donor['location']; ?></div>
                     </div>
                 </div>
             </div>
             
-            <div class="donor-details">
-                <h2>Donor Details</h2>
+            <div class="donor-details p-6 border-b border-gray-200">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Donor Details</h2>
                 
-                <div class="details-grid">
-                    <div class="details-item">
-                        <div class="details-label">Age</div>
-                        <div class="details-value"><?php echo $donor['age']; ?> years</div>
+                <div class="details-grid grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="details-item p-4 bg-gray-50 rounded text-center">
+                        <div class="details-label text-gray-500 text-sm mb-1">Age</div>
+                        <div class="details-value font-semibold text-lg"><?php echo $donor['age']; ?> years</div>
                     </div>
                     
-                    <div class="details-item">
-                        <div class="details-label">Weight</div>
-                        <div class="details-value"><?php echo $donor['weight']; ?> kg</div>
+                    <div class="details-item p-4 bg-gray-50 rounded text-center">
+                        <div class="details-label text-gray-500 text-sm mb-1">Weight</div>
+                        <div class="details-value font-semibold text-lg"><?php echo $donor['weight']; ?> kg</div>
                     </div>
                     
-                    <div class="details-item">
-                        <div class="details-label">Last Donation</div>
-                        <div class="details-value">
+                    <div class="details-item p-4 bg-gray-50 rounded text-center">
+                        <div class="details-label text-gray-500 text-sm mb-1">Last Donation</div>
+                        <div class="details-value font-semibold text-lg">
                             <?php 
                             echo $donor['last_donation_date'] ? date('M d, Y', strtotime($donor['last_donation_date'])) : 'Not Available'; 
                             ?>
                         </div>
                     </div>
                     
-                    <div class="details-item">
-                        <div class="details-label">Medical Conditions</div>
+                    <div class="details-item p-4 bg-gray-50 rounded text-center">
+                        <div class="details-label text-gray-500 text-sm mb-1">Status</div>
                         <div class="details-value">
-                            <?php echo !empty($donor['medical_conditions']) ? $donor['medical_conditions'] : 'None reported'; ?>
+                            <span class="inline-block px-3 py-1 text-sm font-semibold bg-green-100 text-green-800 rounded-full">
+                                Available
+                            </span>
                         </div>
                     </div>
                 </div>
+                
+                <?php if (!empty($donor['medical_conditions'])): ?>
+                <div class="medical-conditions mt-4 p-4 bg-gray-50 rounded">
+                    <div class="details-label text-gray-500 text-sm mb-1">Medical Conditions</div>
+                    <div class="details-value"><?php echo $donor['medical_conditions']; ?></div>
+                </div>
+                <?php endif; ?>
             </div>
             
-            <div class="donor-actions">
-                <a href="contact_donor.php?id=<?php echo $donor_id; ?>" class="btn btn-primary">
-                    <i class="fas fa-paper-plane"></i> Send Message
+            <div class="donor-actions p-6 flex flex-col sm:flex-row gap-4">
+                <a href="contact_donor.php?id=<?php echo $donor_id; ?>" class="btn btn-primary bg-jeevanseva-red hover:bg-jeevanseva-darkred text-white px-6 py-3 rounded flex-1 text-center flex items-center justify-center">
+                    <i class="fas fa-paper-plane mr-2"></i> Send Message
                 </a>
                 
-                <a href="report-donor.php?id=<?php echo $donor_id; ?>" class="btn btn-outline">
-                    <i class="fas fa-flag"></i> Report Issue
+                <a href="report-donor.php?id=<?php echo $donor_id; ?>" class="btn btn-outline border border-jeevanseva-gray hover:bg-gray-100 text-jeevanseva-gray px-6 py-3 rounded flex-1 text-center flex items-center justify-center">
+                    <i class="fas fa-flag mr-2"></i> Report Issue
                 </a>
             </div>
             
-            <div class="donation-guidelines">
-                <h3>Before Contacting the Donor</h3>
-                <ul>
+            <div class="donation-guidelines p-6 bg-jeevanseva-light">
+                <h3 class="text-lg font-semibold mb-3 text-gray-800">Before Contacting the Donor</h3>
+                <ul class="list-disc pl-5 space-y-2 text-gray-600">
                     <li>Be respectful of the donor's time and willingness to help.</li>
                     <li>Clearly explain the urgency and nature of your blood requirement.</li>
                     <li>Provide details about the hospital or blood bank where donation is needed.</li>
